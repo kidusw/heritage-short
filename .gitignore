@@ -8,3 +8,8 @@ venv/
 outputs/*/_tmp/
 outputs/smoke/
 .DS_Store
+
+# Generated audio (narration clips, batch takes, manifest, radio cuts)
+outputs/narration/*
+!outputs/narration/tts_quirks.json
+outputs/radio/
