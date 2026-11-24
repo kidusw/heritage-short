@@ -23,6 +23,18 @@ STAGE = "narration"
 SAMPLE_RATE = 24000  # Gemini TTS returns 24 kHz, 16-bit mono PCM
 
 
+def gemini_client():
+    """Gemini client pinned to v1beta. google-genai 3.x defaults to the v1 API, which rejects
+    speechConfig with 400 INVALID_ARGUMENT (FAILURES.md F3). Override with GEMINI_API_VERSION."""
+    from google import genai
+    from google.genai import types
+
+    key = os.environ.get("GEMINI_API_KEY")
+    if not key:
+        raise SystemExit("GEMINI_API_KEY not set (see .env.example), or pass --offline.")
+    return genai.Client(api_key=key, http_options=types.HttpOptions(api_version=os.environ.get("GEMINI_API_VERSION", "v1beta")))
+
+
 # Ids to try when the API's model list doesn't name a TTS model. The Gemini API has hidden TTS ids from
 # models.list() before, and ids get renamed often (see FAILURES.md F3), so we probe instead of trusting the list.
 TTS_CANDIDATES = [
@@ -123,12 +135,7 @@ def main(argv=None) -> None:
 
     client = model = None
     if not args.offline:
-        from google import genai
-
-        key = os.environ.get("GEMINI_API_KEY")
-        if not key:
-            raise SystemExit("GEMINI_API_KEY not set (see .env.example), or pass --offline.")
-        client = genai.Client(api_key=key)
+        client = gemini_client()
         model = resolve_tts_model(client)
         print(f"narration: using {model}")
     provider = "offline" if args.offline else "gemini"

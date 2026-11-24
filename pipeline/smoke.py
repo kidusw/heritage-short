@@ -21,11 +21,9 @@ def check_gemini() -> str:
     key = os.environ.get("GEMINI_API_KEY")
     if not key:
         return "SKIPPED (no GEMINI_API_KEY)"
-    from google import genai
+    from .narration import gemini_client, gemini_tts, resolve_tts_model, write_wav
 
-    from .narration import gemini_tts, resolve_tts_model, write_wav
-
-    client = genai.Client(api_key=key)
+    client = gemini_client()
     t0 = time.perf_counter()
     models = [m.name.removeprefix("models/") for m in client.models.list(config={"page_size": 200})]
     log_call(stage=STAGE, provider="gemini", model="models.list", latency_s=time.perf_counter() - t0,
