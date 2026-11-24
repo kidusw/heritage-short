@@ -73,7 +73,14 @@ def resolve_tts_model(client, verbose: bool = False) -> str:
     if os.environ.get("GEMINI_TTS_MODEL"):
         return os.environ["GEMINI_TTS_MODEL"]
     listed = [m.name.removeprefix("models/") for m in client.models.list(config={"page_size": 200})]
-    tts_listed = sorted((n for n in listed if "tts" in n.lower()), key=lambda n: ("flash" not in n, n))
+    import re
+
+    def rank(n: str):
+        # Newest version first, then flash before pro, then non-lite before lite, then stable before preview.
+        v = re.search(r"(\d+(?:\.\d+)?)", n)
+        return (-(float(v.group(1)) if v else 0), "flash" not in n, "lite" in n, "preview" in n, n)
+
+    tts_listed = sorted((n for n in listed if "tts" in n.lower()), key=rank)
     candidates = tts_listed + [c for c in TTS_CANDIDATES if c not in tts_listed]
     model = probe_tts(client, candidates, verbose=verbose)
     if not model:
@@ -107,7 +114,10 @@ def gemini_tts(client, model: str, text: str, voice: str, style: str | None) -> 
             ),
         ),
     )
-    part = resp.candidates[0].content.parts[0]
+    cand = resp.candidates[0] if resp.candidates else None
+    if not cand or not cand.content or not cand.content.parts:
+        raise RuntimeError(f"TTS returned no content (finish_reason={getattr(cand, 'finish_reason', None)})")
+    part = cand.content.parts[0]
     if not getattr(part, "inline_data", None) or not part.inline_data.data:
         raise RuntimeError(f"TTS returned no audio: {resp}")
     return part.inline_data.data

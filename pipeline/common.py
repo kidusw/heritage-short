@@ -18,6 +18,7 @@ import hashlib
 import json
 import os
 import random
+import shutil
 import subprocess
 import sys
 import time
@@ -233,6 +234,9 @@ def run_ffmpeg(args: list[str]) -> None:
 
 
 def media_duration(path: Path) -> float:
+    if not shutil.which("ffprobe"):
+        raise SystemExit("ffprobe not found on PATH. It ships with ffmpeg: Windows `winget install Gyan.FFmpeg`, "
+                         "then open a new terminal.")
     res = subprocess.run(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", str(path)],
         capture_output=True, text=True, check=True,

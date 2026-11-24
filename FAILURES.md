@@ -18,7 +18,8 @@ What broke, what I tried, what fixed it.
 - **Then:** every probe, even for ids that don't exist, failed with the same `400 INVALID_ARGUMENT: Unknown name "speechConfig" at 'generation_config'`. An identical error for real and fake ids meant the request shape was wrong, not the model.
 - **Root cause:** google-genai 3.x defaults to the `v1` API; `speechConfig` only exists on `v1beta`.
 - **Fix:** `gemini_client()` pins `api_version="v1beta"` (overridable with `GEMINI_API_VERSION`).
-- **Result:** _fill in after the probe runs_.
+- **Result:** on v1beta the key sees 65 models instead of 28, five of them TTS (gemini-2.5-flash-preview-tts, gemini-2.5-pro-preview-tts, gemini-3.1-flash-tts-preview, gemini-3.8-flash-tts, gemini-3.8-flash-lite-tts). So the "no TTS model" symptom was also the v1 API, which simply doesn't list them. gemini-2.5-flash-preview-tts returned an empty candidate; gemini-3.1-flash-tts-preview returned audio.
+- **Follow-up:** the probe tried oldest first. It now ranks newest version first (flash before pro, non-lite before lite, stable before preview), so it tries gemini-3.8-flash-tts first.
 
 ## F4. ffmpeg missing on a fresh Windows machine
 - **Broke:** `pipeline.run --offline` crashed with `FileNotFoundError: [WinError 2]` inside `run_ffmpeg`.
