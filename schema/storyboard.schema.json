@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kidusw/heritage-short/schema/storyboard.schema.json",
+  "title": "Heritage Short storyboard",
+  "description": "The single contract between every pipeline stage. Every stage reads this file; none of them write it.",
+  "type": "object",
+  "required": ["title", "version", "languages", "audience", "intent", "style", "voices", "music", "shots"],
+  "additionalProperties": false,
+  "properties": {
+    "title": { "type": "string", "minLength": 1 },
+    "version": { "type": "integer", "minimum": 1, "description": "Bump when the storyboard changes meaningfully, so runs.jsonl can be tied to a version." },
+    "languages": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/lang" },
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Narration languages to produce. The first one is the default."
+    },
+    "audience": { "type": "string", "minLength": 1, "description": "Who the film is for." },
+    "intent": { "type": "string", "minLength": 1, "description": "What the audience should feel or understand at the end." },
+    "style": {
+      "type": "object",
+      "required": ["visual_prefix"],
+      "additionalProperties": false,
+      "properties": {
+        "visual_prefix": { "type": "string", "description": "Prepended to every keyframe prompt to keep a consistent look." },
+        "negative": { "type": "string", "description": "Things to avoid in every image." },
+        "palette": { "type": "string" }
+      }
+    },
+    "characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "description": { "type": "string", "description": "Fixed visual description reused verbatim in every shot the character appears in." },
+          "real_person": { "type": "boolean", "default": false, "description": "True if this depicts a real person. Requires a consent entry in ETHICS.md." },
+          "consent_ref": { "type": "string", "description": "Pointer to the consent record in ETHICS.md." }
+        },
+        "if": { "properties": { "real_person": { "const": true } }, "required": ["real_person"] },
+        "then": { "required": ["consent_ref"] }
+      }
+    },
+    "voices": {
+      "type": "object",
+      "description": "TTS voice settings per language code.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["voice_name"],
+        "additionalProperties": false,
+        "properties": {
+          "voice_name": { "type": "string" },
+          "style_prompt": { "type": "string", "description": "Natural-language delivery direction prepended to the TTS request." }
+        }
+      }
+    },
+    "music": {
+      "type": "object",
+      "required": ["prompt"],
+      "additionalProperties": false,
+      "properties": {
+        "prompt": { "type": "string" },
+        "lyrics": { "type": "string", "default": "[instrumental]" },
+        "bpm": { "type": "integer", "minimum": 40, "maximum": 200 },
+        "seed": { "type": "integer" },
+        "duck_db": { "type": "number", "default": -14, "description": "How far the score drops under narration." }
+      }
+    },
+    "end_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string" },
+        "duration_s": { "type": "number", "minimum": 1, "maximum": 10 }
+      }
+    },
+    "shots": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/shot" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "lang": { "type": "string", "pattern": "^[a-z]{2,3}$", "description": "ISO 639-1/3 code, e.g. en, am." },
+    "shot": {
+      "type": "object",
+      "required": ["id", "duration_s", "purpose", "keyframe_prompt", "narration"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "duration_s": { "type": "number", "minimum": 2, "maximum": 15 },
+        "purpose": { "type": "string", "minLength": 1, "description": "Why this shot exists. Every shot needs a reason you can state." },
+        "keyframe_prompt": { "type": "string", "minLength": 1 },
+        "motion_prompt": { "type": "string", "description": "Camera/subject motion for the image-to-video model." },
+        "camera": { "type": "string", "description": "Shot size and angle, e.g. 'wide, eye level'." },
+        "characters": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "seed": { "type": "integer", "minimum": 0 },
+        "video": { "enum": ["wan", "kenburns"], "default": "wan", "description": "Preferred motion method; kenburns is always the fallback." },
+        "narration": {
+          "type": "object",
+          "description": "Narration text keyed by language code. Empty string means no narration on this shot.",
+          "additionalProperties": { "type": "string" }
+        },
+        "subtitle_en": { "type": "string", "description": "English subtitle. Defaults to narration.en when absent." }
+      }
+    }
+  }
+}

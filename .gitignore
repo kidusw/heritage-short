@@ -1,0 +1,10 @@
+.env
+*.env.local
+kaggle.json
+__pycache__/
+*.pyc
+.venv/
+venv/
+outputs/*/_tmp/
+outputs/smoke/
+.DS_Store
