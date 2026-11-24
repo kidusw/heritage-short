@@ -1,0 +1,6 @@
+{
+  "speaks_direction": [
+    "gemini-3.8-flash-lite-tts",
+    "gemini-3.8-flash-tts"
+  ]
+}
