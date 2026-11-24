@@ -223,7 +223,11 @@ def with_retries(
 
 def run_ffmpeg(args: list[str]) -> None:
     cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", *args]
-    res = subprocess.run(cmd, capture_output=True, text=True)
+    try:
+        res = subprocess.run(cmd, capture_output=True, text=True)
+    except FileNotFoundError:
+        raise SystemExit("ffmpeg not found on PATH. Install it (Windows: `winget install Gyan.FFmpeg`, "
+                         "macOS: `brew install ffmpeg`, Linux: `apt install ffmpeg`) and open a new terminal.")
     if res.returncode != 0:
         raise RuntimeError(f"ffmpeg failed: {' '.join(cmd)}\n{res.stderr}")
 

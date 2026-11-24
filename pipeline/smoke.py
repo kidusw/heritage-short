@@ -27,13 +27,13 @@ def check_gemini() -> str:
 
     client = genai.Client(api_key=key)
     t0 = time.perf_counter()
-    models = [m.name.removeprefix("models/") for m in client.models.list()]
+    models = [m.name.removeprefix("models/") for m in client.models.list(config={"page_size": 200})]
     log_call(stage=STAGE, provider="gemini", model="models.list", latency_s=time.perf_counter() - t0,
              params={"count": len(models)})
     tts = [m for m in models if "tts" in m]
     print(f"  gemini: {len(models)} models visible; TTS models: {tts or 'none'}")
 
-    model = resolve_tts_model(client)
+    model = resolve_tts_model(client, verbose=True)
     out = stage_dir(STAGE) / "gemini_tts_am.wav"
     t0 = time.perf_counter()
     try:

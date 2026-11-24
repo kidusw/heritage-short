@@ -23,16 +23,52 @@ STAGE = "narration"
 SAMPLE_RATE = 24000  # Gemini TTS returns 24 kHz, 16-bit mono PCM
 
 
-def resolve_tts_model(client) -> str:
-    """Use GEMINI_TTS_MODEL if set; otherwise discover a TTS model from the API.
-    Model ids change often (see FAILURES.md), so we don't hard-code one."""
+# Ids to try when the API's model list doesn't name a TTS model. The Gemini API has hidden TTS ids from
+# models.list() before, and ids get renamed often (see FAILURES.md F3), so we probe instead of trusting the list.
+TTS_CANDIDATES = [
+    "gemini-3.8-flash-tts",
+    "gemini-3.8-flash-preview-tts",
+    "gemini-3.8-flash",
+    "gemini-omni-flash-preview",
+    "gemini-2.5-flash-preview-tts",
+    "gemini-2.5-flash-tts",
+]
+
+
+def probe_tts(client, candidates: list[str], verbose: bool = False) -> str | None:
+    """Return the first model id that actually returns audio for a tiny request. Every probe is logged."""
+    import time
+
+    for model in candidates:
+        t0 = time.perf_counter()
+        try:
+            pcm = gemini_tts(client, model, "Hello.", "Charon", None)
+            log_call(stage="tts_probe", provider="gemini", model=model, latency_s=time.perf_counter() - t0,
+                     params={"bytes": len(pcm)})
+            if verbose:
+                print(f"    probe {model}: OK ({len(pcm)} bytes of audio)")
+            return model
+        except Exception as e:  # noqa: BLE001
+            log_call(stage="tts_probe", provider="gemini", model=model, latency_s=time.perf_counter() - t0,
+                     status="error", error=str(e)[:300])
+            if verbose:
+                print(f"    probe {model}: {type(e).__name__}: {str(e)[:140]}")
+    return None
+
+
+def resolve_tts_model(client, verbose: bool = False) -> str:
+    """GEMINI_TTS_MODEL if set; else any listed model with 'tts' in its id; else probe known candidates."""
     if os.environ.get("GEMINI_TTS_MODEL"):
         return os.environ["GEMINI_TTS_MODEL"]
-    names = [m.name.removeprefix("models/") for m in client.models.list() if "tts" in m.name.lower()]
-    if not names:
-        raise SystemExit("No TTS model visible to this API key. Set GEMINI_TTS_MODEL in .env.")
-    names.sort(key=lambda n: ("flash" not in n, "preview" in n, n), reverse=False)
-    return names[0]
+    listed = [m.name.removeprefix("models/") for m in client.models.list(config={"page_size": 200})]
+    tts_listed = sorted((n for n in listed if "tts" in n.lower()), key=lambda n: ("flash" not in n, n))
+    candidates = tts_listed + [c for c in TTS_CANDIDATES if c not in tts_listed]
+    model = probe_tts(client, candidates, verbose=verbose)
+    if not model:
+        raise SystemExit("No model returned audio. Tried: " + ", ".join(candidates) +
+                         "\nFind the current TTS model id in Google AI Studio and set GEMINI_TTS_MODEL in .env.")
+    print(f"  TTS model resolved to {model}. Put GEMINI_TTS_MODEL={model} in .env to skip probing next time.")
+    return model
 
 
 def write_wav(path: Path, pcm: bytes, rate: int = SAMPLE_RATE) -> None:
