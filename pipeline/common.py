@@ -193,8 +193,10 @@ def with_retries(
     base_delay: float = 2.0,
     cost_usd: float | Callable[[Any], float] = 0.0,
     output: Path | None = None,
+    give_up: Callable[[Exception], bool] | None = None,
 ):
-    """Call fn with exponential backoff + jitter. Every attempt, success or failure, is logged."""
+    """Call fn with exponential backoff + jitter. Every attempt, success or failure, is logged.
+    give_up(e) -> True stops retrying immediately (e.g. a daily quota that won't reset within the run)."""
     last_exc: Exception | None = None
     for n in range(1, max_attempts + 1):
         att = Attempt(number=n)
@@ -212,7 +214,7 @@ def with_retries(
             quota = isinstance(e, QuotaError) or "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e) or "quota" in str(e).lower()
             log_call(stage=stage, provider=provider, model=model, shot=shot, params=params, seed=seed,
                      latency_s=latency, status="quota" if quota else "error", attempt=n, error=str(e)[:500])
-            if n == max_attempts:
+            if n == max_attempts or (give_up and give_up(e)):
                 break
             delay = base_delay * (2 ** (n - 1)) * (3 if quota else 1) + random.uniform(0, 1)
             print(f"  ! {stage}/{shot or '-'} attempt {n} failed ({'quota' if quota else 'error'}): {str(e)[:160]}  -> retrying in {delay:.1f}s", file=sys.stderr)

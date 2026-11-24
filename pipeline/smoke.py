@@ -21,26 +21,23 @@ def check_gemini() -> str:
     key = os.environ.get("GEMINI_API_KEY")
     if not key:
         return "SKIPPED (no GEMINI_API_KEY)"
-    from .narration import gemini_client, gemini_tts, resolve_tts_model, write_wav
+    from .narration import TTSChain, gemini_client, resolve_tts_models, write_wav
 
     client = gemini_client()
     t0 = time.perf_counter()
     models = [m.name.removeprefix("models/") for m in client.models.list(config={"page_size": 200})]
     log_call(stage=STAGE, provider="gemini", model="models.list", latency_s=time.perf_counter() - t0,
              params={"count": len(models)})
-    tts = [m for m in models if "tts" in m]
-    print(f"  gemini: {len(models)} models visible; TTS models: {tts or 'none'}")
+    chain_models = resolve_tts_models(client)
+    print(f"  gemini: {len(models)} models visible; TTS failover order: {chain_models}")
 
-    model = resolve_tts_model(client, verbose=True)
     out = stage_dir(STAGE) / "gemini_tts_am.wav"
-    t0 = time.perf_counter()
-    try:
-        pcm = gemini_tts(client, model, "ሰላም። ይህ የሙከራ ድምፅ ነው።", "Charon", None)
-    except Exception as e:
-        log_call(stage=STAGE, provider="gemini", model=model, latency_s=time.perf_counter() - t0, status="error", error=str(e)[:500])
-        raise
+    # One call only (free tier is ~10 TTS requests/day/model). Re-running smoke reuses the sample.
+    if out.exists() and not os.environ.get("SMOKE_FORCE"):
+        return f"OK (sample already at {out.as_posix()}; set SMOKE_FORCE=1 to spend a call)"
+    pcm, model = TTSChain(client, chain_models).say("ሰላም። ይህ የሙከራ ድምፅ ነው።", "Charon", None,
+                                                    shot="smoke", params={"lang": "am"}, out=out)
     write_wav(out, pcm)
-    log_call(stage=STAGE, provider="gemini", model=model, latency_s=time.perf_counter() - t0, params={"voice": "Charon", "lang": "am"}, output=out)
     return f"OK ({model}, Amharic sample at {out.as_posix()})"
 
 

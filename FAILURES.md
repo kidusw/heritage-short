@@ -29,3 +29,12 @@ What broke, what I tried, what fixed it.
 - **Broke:** the smoke test's raw `GET https://www.kaggle.com/api/v1/kernels/list` returned 404 with my credentials.
 - **Cause:** Kaggle moved its API to `api.kaggle.com` and to new API tokens (`KAGGLE_API_TOKEN`, `KGAT_...`); the old REST path I'd written from memory is gone.
 - **Fix:** the smoke test now calls the official `kaggle` CLI (`python -m kaggle.cli kernels list --mine`), which tracks those changes, and accepts either a new token or legacy username+key.
+
+## F6. Free-tier TTS quota ran out after 5 of 18 clips (day 1)
+- **Broke:** `gemini-3.8-flash-tts` returned `429 RESOURCE_EXHAUSTED`: the free tier allows ~10 requests per day per model, and smoke tests and model probes had already used some. My retry loop then spent 3 more attempts on a quota that resets the next day.
+- **Fixes:**
+  1. **Don't retry daily quotas.** `with_retries(give_up=...)` stops at once when the error names a per-day quota.
+  2. **Fail over across models.** `TTSChain` moves to the next TTS model (3.8-flash, 3.8-flash-lite, 3.1-flash-preview, 2.5...) when one is exhausted; each has its own daily quota.
+  3. **Batch per language.** One TTS request reads all of a language's lines with pauses between them, and ffmpeg `silencedetect` cuts it at the n-1 longest pauses. A full film costs 2 requests instead of 18. If the pauses can't be found, it falls back to per-shot.
+  4. **No probe calls.** Model discovery now uses the model list only; the smoke test reuses its sample instead of spending a request each run.
+  5. **Manifest written after every clip,** so a crash mid-run keeps finished clips.
