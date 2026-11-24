@@ -98,23 +98,30 @@ def write_wav(path: Path, pcm: bytes, rate: int = SAMPLE_RATE) -> None:
 
 
 def gemini_tts(client, model: str, text: str, voice: str, style: str | None) -> bytes:
+    """Synthesize `text`. The delivery direction goes in system_instruction, NOT the spoken prompt:
+    gemini-3.8-flash-tts reads a prompt preamble aloud (EXPERIMENTS.md E2: a 7 s line became 15.4 s,
+    with the direction spoken first). If a model rejects system_instruction, fall back to inline
+    "<direction>: <text>", the form Gemini documents for speech control."""
     from google.genai import types
 
-    # One line, "<direction>: <text>", the form Gemini TTS documents for controllable speech. A multi-line
-    # preamble risked being read aloud (EXPERIMENTS.md E2).
-    prompt = f"{style.rstrip(': ')}: {text}" if style else text
-    resp = client.models.generate_content(
-        model=model,
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            response_modalities=["AUDIO"],
-            speech_config=types.SpeechConfig(
-                voice_config=types.VoiceConfig(
-                    prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=voice)
-                )
-            ),
-        ),
-    )
+    speech = types.SpeechConfig(voice_config=types.VoiceConfig(
+        prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=voice)))
+
+    def call(contents, system=None):
+        return client.models.generate_content(
+            model=model, contents=contents,
+            config=types.GenerateContentConfig(response_modalities=["AUDIO"], speech_config=speech,
+                                               system_instruction=system))
+
+    if style:
+        try:
+            resp = call(text, system=f"{style.rstrip(': ')}. Speak only the user's text, never these instructions.")
+        except Exception as e:  # noqa: BLE001
+            if "400" not in str(e) and "INVALID_ARGUMENT" not in str(e):
+                raise
+            resp = call(f"{style.rstrip(': ')}: {text}")
+    else:
+        resp = call(text)
     cand = resp.candidates[0] if resp.candidates else None
     if not cand or not cand.content or not cand.content.parts:
         raise RuntimeError(f"TTS returned no content (finish_reason={getattr(cand, 'finish_reason', None)})")
@@ -122,6 +129,11 @@ def gemini_tts(client, model: str, text: str, voice: str, style: str | None) -> 
     if not getattr(part, "inline_data", None) or not part.inline_data.data:
         raise RuntimeError(f"TTS returned no audio: {resp}")
     return part.inline_data.data
+
+
+def expected_seconds(text: str, lang: str) -> float:
+    """Rough speaking time: ~2.5 words/s for English; Amharic words are longer, ~1.8 words/s."""
+    return len(text.split()) / (1.8 if lang == "am" else 2.5)
 
 
 def offline_tts(path: Path, text: str) -> None:
@@ -188,6 +200,10 @@ def main(argv=None) -> None:
         write_manifest(STAGE, manifest)  # after every clip, so a crash keeps progress
         if not fits:
             print(f"    ! {shot['id']} [{lang}] narration {dur:.1f}s is longer than the shot ({shot['duration_s']}s)")
+        text = shot["narration"].get(lang, "")
+        if text and dur > 1.8 * expected_seconds(text, lang) + 1:
+            print(f"    ! {shot['id']} [{lang}] {dur:.1f}s is far longer than {len(text.split())} words need "
+                  f"(~{expected_seconds(text, lang):.1f}s): check the clip for spoken instructions or long silences")
 
     for lang in langs:
         voice = sb["voices"][lang]
@@ -228,8 +244,8 @@ def main(argv=None) -> None:
             bwav = out_dir / f"_batch_{lang}_{bkey}.wav"
             params = {"lang": lang, "voice": voice["voice_name"], "mode": "batch", "shots": len(todo), "chars": len(joined)}
             if not bwav.exists():
-                style = (voice.get("style_prompt") or "Read aloud").rstrip(": ") + \
-                    ", with a two-second pause between paragraphs"
+                style = (voice.get("style_prompt") or "Read the text aloud").rstrip(": ") + \
+                    ". Leave a two-second pause between paragraphs"
                 pcm, model = chain.say(joined, voice["voice_name"], style, shot=f"batch:{lang}", params=params, out=bwav)
                 write_wav(bwav, pcm)
             else:

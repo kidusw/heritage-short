@@ -1,7 +1,10 @@
 {
   "title": "The Road to Dire Dawa",
   "version": 1,
-  "languages": ["en", "am"],
+  "languages": [
+    "en",
+    "am"
+  ],
   "audience": "DRAFT: my family and friends who have never been to Dire Dawa, plus Ethiopians abroad who miss home.",
   "intent": "DRAFT: by the end they should feel the warmth and colour of Dire Dawa and want to make the trip themselves.",
   "style": {
@@ -17,8 +20,14 @@
     }
   ],
   "voices": {
-    "en": { "voice_name": "Charon", "style_prompt": "Read this warmly and slowly, like a young man telling his family about a trip he loved:" },
-    "am": { "voice_name": "Charon", "style_prompt": "Read this in Amharic, warmly and slowly, like a young man telling his family about a trip he loved:" }
+    "en": {
+      "voice_name": "Charon",
+      "style_prompt": "Narrate warmly and calmly, like a young man telling his family about a trip he loved"
+    },
+    "am": {
+      "voice_name": "Charon",
+      "style_prompt": "Narrate in Amharic, warmly and calmly, like a young man telling his family about a trip he loved"
+    }
   },
   "music": {
     "prompt": "Gentle Ethio-jazz inspired instrumental, krar and soft piano, slow tizita mode, warm and nostalgic, builds slightly then resolves",
@@ -39,7 +48,9 @@
       "camera": "wide, low angle",
       "keyframe_prompt": "the traveller standing on a modern railway platform in Addis Ababa before dawn, a sleek electric train waiting, blue hour sky",
       "motion_prompt": "slow push-in towards the traveller, train lights flicker on",
-      "characters": ["traveller"],
+      "characters": [
+        "traveller"
+      ],
       "seed": 101,
       "narration": {
         "en": "I had heard about Dire Dawa my whole life. One morning, I finally went.",
@@ -53,7 +64,9 @@
       "camera": "medium, through train window",
       "keyframe_prompt": "view through a train window of the Ethiopian Rift Valley, dry acacia plains and distant mountains, the traveller's reflection faint in the glass",
       "motion_prompt": "landscape slides past from right to left, steady",
-      "characters": ["traveller"],
+      "characters": [
+        "traveller"
+      ],
       "seed": 102,
       "narration": {
         "en": "The highlands fell away. The air grew warm, and the land turned gold.",
@@ -119,7 +132,9 @@
       "camera": "wide, eye level",
       "keyframe_prompt": "the traveller sitting alone on the edge of the wide dry Dechatu riverbed at sunset, mountains in the distance, long shadows",
       "motion_prompt": "very slow push-in, the light fades warmer",
-      "characters": ["traveller"],
+      "characters": [
+        "traveller"
+      ],
       "seed": 107,
       "narration": {
         "en": "By the dry river, I understood why people who leave this city never stop talking about it.",
@@ -146,7 +161,9 @@
       "camera": "medium, from behind",
       "keyframe_prompt": "the traveller seen from behind boarding the train at Dire Dawa in morning light, looking back over his shoulder",
       "motion_prompt": "slow pull-back as the traveller steps onto the train",
-      "characters": ["traveller"],
+      "characters": [
+        "traveller"
+      ],
       "seed": 109,
       "narration": {
         "en": "I left Dire Dawa, but it did not leave me. One day, go and see it for yourself.",
