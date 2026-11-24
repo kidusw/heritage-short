@@ -24,3 +24,8 @@ What broke, what I tried, what fixed it.
 ## F4. ffmpeg missing on a fresh Windows machine
 - **Broke:** `pipeline.run --offline` crashed with `FileNotFoundError: [WinError 2]` inside `run_ffmpeg`.
 - **Fix:** installed ffmpeg (`winget install Gyan.FFmpeg`); `run_ffmpeg` now exits with an install hint instead of a stack trace.
+
+## F5. Kaggle API check returned 404
+- **Broke:** the smoke test's raw `GET https://www.kaggle.com/api/v1/kernels/list` returned 404 with my credentials.
+- **Cause:** Kaggle moved its API to `api.kaggle.com` and to new API tokens (`KAGGLE_API_TOKEN`, `KGAT_...`); the old REST path I'd written from memory is gone.
+- **Fix:** the smoke test now calls the official `kaggle` CLI (`python -m kaggle.cli kernels list --mine`), which tracks those changes, and accepts either a new token or legacy username+key.

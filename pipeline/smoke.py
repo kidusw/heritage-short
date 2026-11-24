@@ -58,29 +58,44 @@ def check_cloudflare() -> str:
     return f"OK ({CF_MODEL}, {len(img)//1024} KB image)"
 
 
-def kaggle_creds() -> tuple[str, str] | None:
-    u, k = os.environ.get("KAGGLE_USERNAME"), os.environ.get("KAGGLE_KEY")
-    if u and k:
-        return u, k
-    p = Path.home() / ".kaggle" / "kaggle.json"
-    if p.exists():
-        d = json.loads(p.read_text())
-        return d["username"], d["key"]
+def kaggle_env() -> dict | None:
+    """Kaggle moved to API tokens (KGAT_...) read from KAGGLE_API_TOKEN; legacy username+key still exist.
+    Return the env vars the official `kaggle` CLI needs, or None if nothing is configured."""
+    token = os.environ.get("KAGGLE_API_TOKEN")
+    key = os.environ.get("KAGGLE_KEY", "")
+    if not token and key.startswith("KGAT_"):
+        token = key  # a new-style token pasted into the old variable
+    if token:
+        return {"KAGGLE_API_TOKEN": token}
+    if os.environ.get("KAGGLE_USERNAME") and key:
+        return {"KAGGLE_USERNAME": os.environ["KAGGLE_USERNAME"], "KAGGLE_KEY": key}
+    home = Path.home() / ".kaggle"
+    if (home / "access_token").exists() or (home / "kaggle.json").exists():
+        return {}
     return None
 
 
 def check_kaggle() -> str:
-    creds = kaggle_creds()
-    if not creds:
-        return "SKIPPED (no KAGGLE_USERNAME/KAGGLE_KEY or ~/.kaggle/kaggle.json)"
-    import requests
+    """Use the official CLI rather than raw REST: Kaggle changed its API host and auth in 2025-26
+    (the old www.kaggle.com/api/v1 kernels endpoint returned 404, FAILURES.md F5)."""
+    import subprocess
+    import sys
 
+    extra = kaggle_env()
+    if extra is None:
+        return "SKIPPED (set KAGGLE_API_TOKEN, or KAGGLE_USERNAME + KAGGLE_KEY)"
     t0 = time.perf_counter()
-    r = requests.get("https://www.kaggle.com/api/v1/kernels/list", params={"user": creds[0], "pageSize": 5}, auth=creds, timeout=30)
-    log_call(stage=STAGE, provider="kaggle", model="kernels.list", latency_s=time.perf_counter() - t0,
-             status="ok" if r.ok else "error", error=None if r.ok else r.text[:300])
-    r.raise_for_status()
-    return f"OK (authenticated as {creds[0]}; {len(r.json())} recent notebooks)"
+    res = subprocess.run([sys.executable, "-m", "kaggle.cli", "kernels", "list", "--mine", "--page-size", "5"],
+                         capture_output=True, text=True, env={**os.environ, **extra}, timeout=120)
+    ok = res.returncode == 0
+    err = (res.stderr or res.stdout).strip().splitlines()[-1:] if not ok else None
+    log_call(stage=STAGE, provider="kaggle", model="kaggle-cli kernels list", latency_s=time.perf_counter() - t0,
+             status="ok" if ok else "error", error=err[0][:300] if err else None,
+             params={"auth": "api_token" if "KAGGLE_API_TOKEN" in extra else ("legacy_key" if extra else "file")})
+    if not ok:
+        raise RuntimeError(err[0] if err else f"kaggle CLI exited {res.returncode}")
+    lines = [l for l in res.stdout.splitlines() if l.strip()]
+    return f"OK (authenticated; {max(0, len(lines) - 2)} of your notebooks listed)"
 
 
 def main() -> None:
