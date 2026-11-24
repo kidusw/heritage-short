@@ -72,15 +72,29 @@ class TTSChain:
     """Calls Gemini TTS, failing over to the next model when one hits its daily quota or doesn't return audio.
     Each model has its own free quota, so a chain of 3 models triples the daily budget."""
 
+    QUIRKS = OUTPUTS / STAGE / "tts_quirks.json"
+
     def __init__(self, client, models: list[str]):
         self.client, self.models, self.dead = client, models, {}
+        # Models seen speaking the delivery direction aloud. Remembered across runs so we stop paying
+        # for a wasted call + redo on every clip (each free request is scarce).
+        try:
+            self.speaks_direction = set(json.loads(self.QUIRKS.read_text(encoding="utf-8")).get("speaks_direction", []))
+        except (OSError, ValueError):
+            self.speaks_direction = set()
+
+    def mark_speaks_direction(self, model: str) -> None:
+        self.speaks_direction.add(model)
+        self.QUIRKS.parent.mkdir(parents=True, exist_ok=True)
+        self.QUIRKS.write_text(json.dumps({"speaks_direction": sorted(self.speaks_direction)}, indent=2), encoding="utf-8")
 
     def say(self, text: str, voice: str, style: str | None, *, shot: str, params: dict, out: Path) -> tuple[bytes, str]:
         for model in self.models:
             if model in self.dead:
                 continue
+            use_style = None if model in self.speaks_direction else style
             try:
-                pcm = with_retries(lambda att: gemini_tts(self.client, model, text, voice, style),
+                pcm = with_retries(lambda att: gemini_tts(self.client, model, text, voice, use_style),
                                    stage=STAGE, provider="gemini", model=model, shot=shot, params=params,
                                    output=out, max_attempts=3, give_up=is_daily_quota)
                 return pcm, model
@@ -226,6 +240,16 @@ def main(argv=None) -> None:
     for lang in langs:
         voice = sb["voices"][lang]
         manifest.setdefault(lang, {})
+        # Drop manifest entries that no longer match the current inputs/cache version, so stale clips
+        # (e.g. from an older run or a different text) can never reach the radio cut.
+        for shot in sb["shots"]:
+            text = shot["narration"].get(lang, "").strip()
+            want = f"{shot['id']}_{lang}_{cache_key(STAGE, CACHE_VERSION, provider, model_setting, text, voice)}.wav"
+            entry = manifest[lang].get(shot["id"])
+            if entry and Path(entry["file"]).name != want:
+                del manifest[lang][shot["id"]]
+        for sid in [k for k in manifest[lang] if k not in {s_["id"] for s_ in sb["shots"]}]:
+            del manifest[lang][sid]
         todo = []
         for shot in select_shots(sb, args.shots):
             text = shot["narration"].get(lang, "").strip()
@@ -285,7 +309,8 @@ def main(argv=None) -> None:
             if style and secs > 1.8 * expected_seconds(text, lang) + 1:
                 # Some TTS models speak the direction aloud (EXPERIMENTS.md E2). Detect by length and redo without it.
                 print(f"    ! {shot['id']} [{lang}] {secs:.1f}s for ~{expected_seconds(text, lang):.1f}s of text: "
-                      f"direction probably spoken; regenerating without it", file=sys.stderr)
+                      f"{model} probably spoke the direction; regenerating without it", file=sys.stderr)
+                chain.mark_speaks_direction(model)
                 pcm, model = chain.say(text, voice["voice_name"], None, shot=shot["id"],
                                        params={**params, "style_prompt": None, "retry_reason": "direction_spoken"}, out=out)
             write_wav(out, pcm)

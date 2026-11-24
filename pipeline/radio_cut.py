@@ -34,6 +34,9 @@ def build(sb: dict, lang: str) -> None:
     narr = read_manifest("narration").get(lang)
     if not narr:
         raise SystemExit(f"No narration for '{lang}'. Run: python -m pipeline.narration --lang {lang}")
+    missing = [s["id"] for s in sb["shots"] if s["narration"].get(lang, "").strip() and not narr.get(s["id"])]
+    if missing:
+        raise SystemExit(f"[{lang}] narration missing for {', '.join(missing)}. Run: python -m pipeline.narration --lang {lang}")
     out_dir = stage_dir(STAGE)
     tmp = out_dir / "_tmp"
     tmp.mkdir(exist_ok=True)

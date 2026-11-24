@@ -38,3 +38,11 @@ What broke, what I tried, what fixed it.
   3. **Batch per language.** One TTS request reads all of a language's lines with pauses between them, and ffmpeg `silencedetect` cuts it at the n-1 longest pauses. A full film costs 2 requests instead of 18. If the pauses can't be found, it falls back to per-shot.
   4. **No probe calls.** Model discovery now uses the model list only; the smoke test reuses its sample instead of spending a request each run.
   5. **Manifest written after every clip,** so a crash mid-run keeps finished clips.
+
+## F7. Stale clips survived in the narration manifest
+- **Broke:** after the cache-version bump, the manifest still pointed en s04-s09 and all Amharic shots at the mis-cut batch clips, because entries were merged per clip and only overwritten when a shot was regenerated. A radio cut would have silently used them.
+- **Fix:** narration now drops any manifest entry whose file name doesn't match the current cache key (text, voice, model setting, cache version), and radio_cut refuses to run if any narrated shot has no current clip.
+
+## F8. All five free TTS models exhausted in one evening
+- **Broke:** narration stopped after 3 of 18 clips. Two of those three cost two calls each, because gemini-3.8-flash-tts and 3.8-flash-lite-tts spoke the direction and the clip had to be redone. gemini-2.5-flash-preview-tts returned 500 INTERNAL.
+- **Fix:** models caught speaking the direction are saved in `outputs/narration/tts_quirks.json` and never sent a direction again, so each clip costs one call. Lesson for the schedule: debugging cost more quota than the actual film. Final narration runs right after the daily reset (midnight Pacific, 11:00 EAT).
