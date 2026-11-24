@@ -25,6 +25,9 @@ from .common import (
 
 STAGE = "narration"
 SAMPLE_RATE = 24000  # Gemini TTS returns 24 kHz, 16-bit mono PCM
+# Bump to invalidate cached clips when how they're made changes but their inputs don't
+# (v2: clips cut by the first batch splitter were mis-assigned, EXPERIMENTS.md E1).
+CACHE_VERSION = "v2"
 
 
 def gemini_client():
@@ -143,18 +146,33 @@ def offline_tts(path: Path, text: str) -> None:
                 "-af", "volume=0.15", "-ac", "1", str(path)])
 
 
-def split_on_silences(wav: Path, n: int, out_paths: list[Path]) -> bool:
-    """Cut a batched reading into n clips at the n-1 longest silences. Returns False if it can't."""
+def split_on_silences(wav: Path, texts: list[str], out_paths: list[Path]) -> bool:
+    """Cut a batched reading into one clip per text. Pauses inside a paragraph can be as long as pauses
+    between paragraphs (EXPERIMENTS.md E1), so instead of "the n-1 longest pauses" we pick, for each
+    boundary, the pause closest to where it should fall if speech time is proportional to text length."""
+    n = len(texts)
     res = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(wav), "-af", "silencedetect=noise=-38dB:d=0.35", "-f", "null", "-"],
                          capture_output=True, text=True)
     starts = [float(x) for x in re.findall(r"silence_start: ([\d.]+)", res.stderr)]
     ends = [float(x) for x in re.findall(r"silence_end: ([\d.]+)", res.stderr)]
-    gaps = [(e - s_, s_, e) for s_, e in zip(starts, ends) if s_ > 0.2]
     total = media_duration(wav)
-    gaps = [g for g in gaps if g[2] < total - 0.2]  # ignore trailing silence
+    speech_start = ends[0] if starts and starts[0] < 0.05 and ends else 0.0
+    speech_end = starts[-1] if starts and len(starts) > len(ends) else (starts[-1] if starts and ends and abs(ends[-1] - total) < 0.05 else total)
+    gaps = [((s_ + e) / 2, e - s_) for s_, e in zip(starts, ends) if speech_start + 0.2 < s_ and e < speech_end - 0.2]
     if len(gaps) < n - 1:
         return False
-    cuts = sorted((s_ + e) / 2 for _, s_, e in sorted(gaps, reverse=True)[: n - 1])
+    lens = [len(t) for t in texts]
+    span = speech_end - speech_start
+    cuts, used = [], -1
+    for k in range(1, n):
+        target = speech_start + span * sum(lens[:k]) / sum(lens)
+        # must leave enough gaps for the remaining boundaries; prefer near the target, then longer pauses
+        options = [(abs(mid - target) - 0.5 * length, i) for i, (mid, length) in enumerate(gaps)
+                   if used < i <= len(gaps) - (n - k)]
+        if not options:
+            return False
+        _, used = min(options)
+        cuts.append(gaps[used][0])
     bounds = [0.0, *cuts, total]
     for i, out in enumerate(out_paths):
         a, b = bounds[i], bounds[i + 1]
@@ -170,9 +188,9 @@ def main(argv=None) -> None:
     ap.add_argument("--shots", nargs="*", help="Shot ids (or prefixes like s03) to (re)generate")
     ap.add_argument("--offline", action="store_true", help="Skip the API; write placeholder audio")
     ap.add_argument("--force", action="store_true", help="Ignore cache")
-    ap.add_argument("--mode", choices=["auto", "batch", "per-shot"], default="auto",
-                    help="batch = one TTS call per language, split on silences (saves quota); "
-                         "auto = batch when 3+ clips are missing")
+    ap.add_argument("--mode", choices=["per-shot", "batch"], default="per-shot",
+                    help="per-shot (default, reliable) or batch = one TTS call per language split on pauses "
+                         "(experimental, saves quota; EXPERIMENTS.md E1)")
     args = ap.parse_args(argv)
 
     load_env()
@@ -215,7 +233,7 @@ def main(argv=None) -> None:
                 manifest[lang][shot["id"]] = None
                 continue
             # Cache key covers text, voice and the *model setting*; the model actually used is in the manifest.
-            key = cache_key(STAGE, provider, model_setting, text, voice)
+            key = cache_key(STAGE, CACHE_VERSION, provider, model_setting, text, voice)
             out = out_dir / f"{shot['id']}_{lang}_{key}.wav"
             params = {"lang": lang, "voice": voice["voice_name"], "style_prompt": voice.get("style_prompt"), "chars": len(text)}
             if out.exists() and not args.force:
@@ -236,7 +254,7 @@ def main(argv=None) -> None:
                 record(lang, shot, out, model_setting)
             continue
 
-        batch = args.mode == "batch" or (args.mode == "auto" and len(todo) >= 3)
+        batch = args.mode == "batch"  # experimental: see EXPERIMENTS.md E1 (pause-splitting proved unreliable)
         if batch:
             # One request for the whole language: blank lines between shots become pauses we can cut on.
             joined = "\n\n".join(t for _, t, _, _ in todo)
@@ -244,14 +262,13 @@ def main(argv=None) -> None:
             bwav = out_dir / f"_batch_{lang}_{bkey}.wav"
             params = {"lang": lang, "voice": voice["voice_name"], "mode": "batch", "shots": len(todo), "chars": len(joined)}
             if not bwav.exists():
-                style = (voice.get("style_prompt") or "Read the text aloud").rstrip(": ") + \
-                    ". Leave a two-second pause between paragraphs"
-                pcm, model = chain.say(joined, voice["voice_name"], style, shot=f"batch:{lang}", params=params, out=bwav)
+                # No direction in batch mode: gemini-3.8-flash-lite-tts spoke it even as a system instruction (E1).
+                pcm, model = chain.say(joined, voice["voice_name"], None, shot=f"batch:{lang}", params=params, out=bwav)
                 write_wav(bwav, pcm)
             else:
                 model = (manifest.get("_batches", {}).get(bwav.name) or model_setting)
             manifest.setdefault("_batches", {})[bwav.name] = model
-            if split_on_silences(bwav, len(todo), [o for _, _, o, _ in todo]):
+            if split_on_silences(bwav, [t for _, t, _, _ in todo], [o for _, _, o, _ in todo]):
                 for shot, _, out, _ in todo:
                     print(f"  + {shot['id']} [{lang}] {media_duration(out):.1f}s (batched, {model})")
                     record(lang, shot, out, model)
@@ -262,7 +279,15 @@ def main(argv=None) -> None:
                      status="error", error="batch split failed; per-shot fallback", output=bwav)
 
         for shot, text, out, params in todo:
-            pcm, model = chain.say(text, voice["voice_name"], voice.get("style_prompt"), shot=shot["id"], params=params, out=out)
+            style = voice.get("style_prompt")
+            pcm, model = chain.say(text, voice["voice_name"], style, shot=shot["id"], params=params, out=out)
+            secs = len(pcm) / 2 / SAMPLE_RATE
+            if style and secs > 1.8 * expected_seconds(text, lang) + 1:
+                # Some TTS models speak the direction aloud (EXPERIMENTS.md E2). Detect by length and redo without it.
+                print(f"    ! {shot['id']} [{lang}] {secs:.1f}s for ~{expected_seconds(text, lang):.1f}s of text: "
+                      f"direction probably spoken; regenerating without it", file=sys.stderr)
+                pcm, model = chain.say(text, voice["voice_name"], None, shot=shot["id"],
+                                       params={**params, "style_prompt": None, "retry_reason": "direction_spoken"}, out=out)
             write_wav(out, pcm)
             print(f"  + {shot['id']} [{lang}] {media_duration(out):.1f}s ({model})")
             record(lang, shot, out, model)
