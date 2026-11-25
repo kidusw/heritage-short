@@ -1,12 +1,12 @@
 {
   "title": "The Long Road to Dire Dawa",
-  "version": 3,
+  "version": 4,
   "languages": [
     "am",
     "en"
   ],
   "audience": "Anyone who wants to hear the story of my first visit to Dire Dawa: family, friends, and Ethiopians at home and abroad who know the road east.",
-  "intent": "By the end they should feel the length and heat of the journey, the warmth of a family pushing an old car through it together, and why we made the trip: to stand before Saint Gabriel at Kulubi.",
+  "intent": "By the end they should feel the length and heat of my first journey to Dire Dawa, my mother's family's home, the warmth of a family pushing an old car through it together, and why we made the trip: to stand before Saint Gabriel at Kulubi.",
   "style": {
     "visual_prefix": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel.",
     "negative": "text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground",
@@ -74,7 +74,7 @@
     {
       "id": "s01_departure",
       "duration_s": 7,
-      "purpose": "Hook and frame: an annual pilgrimage, and this year my family is part of it.",
+      "purpose": "Hook: frame the film as my first trip to Dire Dawa, my mother's family's home.",
       "camera": "wide, early morning",
       "keyframe_prompt": "a family loading bags onto the roof of the car outside a house in Addis Ababa before sunrise, cool blue light, eucalyptus trees",
       "motion_prompt": "slow push-in as the last bag is tied down",
@@ -85,15 +85,15 @@
       ],
       "seed": 201,
       "narration": {
-        "am": "በየዓመቱ ብዙዎች ለቅዱስ ገብርኤል ወደ ቁልቢ ይጓዛሉ። በዚያ ዓመት እኛም ሄድን።",
-        "en": "Every year, Ethiopians travel to Kulubi for Saint Gabriel. That year, my family went too."
+        "am": "ይህ ወደ ድሬዳዋ የመጀመሪያ ጉዞዬ ታሪክ ነው፤ የእናቴ ቤተሰብ ከዚያ ነው።",
+        "en": "This is the story of my first trip to Dire Dawa, where my mother's family comes from."
       },
       "video": "kenburns"
     },
     {
       "id": "s02_car",
       "duration_s": 7,
-      "purpose": "Introduce the five of us and the old car: the two 'characters' of the journey.",
+      "purpose": "Introduce the five of us, the old car, and why we went: Saint Gabriel's feast at Kulubi.",
       "camera": "medium, inside the car from the back seat",
       "keyframe_prompt": "inside the car on the highway, the father driving, the mother beside him, the sister and brother in the back seat, open road through the windscreen",
       "motion_prompt": "gentle handheld sway, road moving past the windows",
@@ -106,8 +106,8 @@
       ],
       "seed": 202,
       "narration": {
-        "am": "አምስታችን በአሮጌዋ ኤላንትራ መኪናችን ውስጥ፤ ፊታችን አምስት መቶ ሃያ አምስት ኪሎ ሜትር።",
-        "en": "Five of us, packed into our old Elantra, with 525 kilometres ahead."
+        "am": "አምስታችን በአሮጌዋ ኤላንትራ ወደ ቁልቢ ገብርኤል ክብረ በዓል እያመራን ነበር።",
+        "en": "Five of us in our old Elantra, heading for Saint Gabriel's feast at Kulubi."
       },
       "video": "kenburns"
     },
@@ -123,8 +123,8 @@
       ],
       "seed": 203,
       "narration": {
-        "am": "አዋሽ ላይ ግመሎች መንገዱ የነሱ እንደሆነ ሁሉ ተሻገሩ።",
-        "en": "At Awash, camels crossed the road as if they owned it."
+        "am": "ፊታችን አምስት መቶ ሃያ አምስት ኪሎ ሜትር ነበር። አዋሽ ላይ ግመሎች መንገዱን ተሻገሩ።",
+        "en": "525 kilometres lay ahead. At Awash, camels crossed the road as if they owned it."
       },
       "video": "kenburns"
     },
@@ -241,7 +241,7 @@
     {
       "id": "s10_arrival",
       "duration_s": 7,
-      "purpose": "Release: we made it to Dire Dawa.",
+      "purpose": "Release: we made it to Dire Dawa, my mother's hometown.",
       "camera": "wide, dusk",
       "keyframe_prompt": "the car driving into Dire Dawa at dusk, warm street lights, palm trees, bajaj taxis, the sky orange and violet",
       "motion_prompt": "slow tracking shot alongside the car",
@@ -250,8 +250,8 @@
       ],
       "seed": 210,
       "narration": {
-        "am": "ቀስ በቀስ፣ ቆም እያልን፣ ድሬዳዋ ደረስን።",
-        "en": "Slowly, stop by stop, we reached Dire Dawa."
+        "am": "ቀስ በቀስ፣ ቆም እያልን፣ የእናቴ ከተማ ድሬዳዋ ደረስን።",
+        "en": "Slowly, stop by stop, we reached Dire Dawa, my mother's hometown."
       },
       "video": "kenburns"
     },

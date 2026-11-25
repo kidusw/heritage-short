@@ -1,7 +1,7 @@
 # Design
 
 ## The story
-My first visit to Dire Dawa: my whole family (my father, mother, sister, brother and me) drove 525 km
+My first visit to Dire Dawa, where my mother's side of the family comes from: my whole family (my father, mother, sister, brother and me) drove 525 km
 from Addis Ababa in an early-1990s Hyundai Elantra to the yearly Saint Gabriel celebration at Kulubi,
 near Dire Dawa. On the way we passed Awash (camels and monkeys) and the volcanic rocky mountains near
 Asbe Teferi. As the road dropped into the lowlands the old car kept overheating, and we had to stop every
@@ -22,7 +22,7 @@ follow. Language is data, not code: `storyboard.languages` is `["am", "en"]`, th
 and every stage takes `--lang`, so the same pipeline also produces an English-narrated cut.
 
 ## Structure (11 shots, ~78 s + 4 s end card)
-1. Departure (hook: an annual pilgrimage). 2. The five of us in the old car. 3-5. The road changes
+1. Departure (hook: my first trip to Dire Dawa, my mother's family's home). 2. The five of us in the old car, heading for Saint Gabriel's feast at Kulubi. 3-5. The road changes
 the world: camels at Awash, monkeys, Asbe Teferi's volcanic rock. 6-7. Heat rises, the car gives out.
 **8. My father pouring water on the engine: the heart of the film.** 9. What it meant: all of us
 together by the road. 10. Arrival in Dire Dawa. 11. Kulubi: why we went.
@@ -42,3 +42,7 @@ Every shot uses a Ken Burns move chosen from its `motion_prompt` (`video: "kenbu
 - Who:
 - What they said:
 - What changed:
+
+## Changes from my own review (25 Nov)
+- **Opening reframed:** v2 opened on "every year, many people travel to Kulubi", which made it a film about the pilgrimage in general. v4 opens with "this is the story of my first trip to Dire Dawa, where my mother's family comes from", so it is personal from the first line. The Kulubi feast moves to shot 2 as the reason for the trip, and the arrival shot names Dire Dawa as my mother's hometown, which ties the start and the end together.
+- **Side effect:** s01's old line had a word ("ብዙዎች") that the TTS seemed to mispronounce (EXPERIMENTS.md E3). The rewrite removes it.
