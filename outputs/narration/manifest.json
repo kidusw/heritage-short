@@ -1,26 +1,5 @@
 {
   "am": {
-    "s01_departure": {
-      "file": "outputs/narration/s01_departure_am_cda8d179b3e3.wav",
-      "model": "gemini-3.8-flash-tts",
-      "duration_s": 6.3,
-      "shot_duration_s": 7,
-      "fits": true
-    },
-    "s02_car": {
-      "file": "outputs/narration/s02_car_am_8bea058a4626.wav",
-      "model": "gemini-3.8-flash-tts",
-      "duration_s": 5.75,
-      "shot_duration_s": 7,
-      "fits": true
-    },
-    "s03_awash_camels": {
-      "file": "outputs/narration/s03_awash_camels_am_82d3bd836bf9.wav",
-      "model": "gemini-3.8-flash-tts",
-      "duration_s": 4.0,
-      "shot_duration_s": 8,
-      "fits": true
-    },
     "s04_monkeys": {
       "file": "outputs/narration/s04_monkeys_am_55b60c901298.wav",
       "model": "gemini-3.8-flash-lite-tts",
@@ -63,18 +42,39 @@
       "shot_duration_s": 7,
       "fits": true
     },
-    "s10_arrival": {
-      "file": "outputs/narration/s10_arrival_am_07d812a3d028.wav",
-      "model": "gemini-3.1-flash-tts-preview",
-      "duration_s": 4.96,
-      "shot_duration_s": 7,
-      "fits": true
-    },
     "s11_kulubi": {
       "file": "outputs/narration/s11_kulubi_am_0e9be299f25f.wav",
       "model": "gemini-3.1-flash-tts-preview",
       "duration_s": 7.68,
       "shot_duration_s": 8,
+      "fits": true
+    },
+    "s01_departure": {
+      "file": "outputs/narration/s01_departure_am_b168f92bc3ce.wav",
+      "model": "gemini-3.8-flash-lite-tts",
+      "duration_s": 4.71,
+      "shot_duration_s": 7,
+      "fits": true
+    },
+    "s02_car": {
+      "file": "outputs/narration/s02_car_am_32bcec3094ce.wav",
+      "model": "gemini-3.8-flash-lite-tts",
+      "duration_s": 5.45,
+      "shot_duration_s": 7,
+      "fits": true
+    },
+    "s03_awash_camels": {
+      "file": "outputs/narration/s03_awash_camels_am_0ca7a6c1a083.wav",
+      "model": "gemini-3.1-flash-tts-preview",
+      "duration_s": 7.16,
+      "shot_duration_s": 8,
+      "fits": true
+    },
+    "s10_arrival": {
+      "file": "outputs/narration/s10_arrival_am_4e0293902d5b.wav",
+      "model": "gemini-3.1-flash-tts-preview",
+      "duration_s": 5.6,
+      "shot_duration_s": 7,
       "fits": true
     }
   }

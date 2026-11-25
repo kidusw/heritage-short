@@ -12,27 +12,27 @@
     "duration_s": 7
   },
   "s03_awash_camels": {
-    "file": "outputs/shots/s03_awash_camels_wan_70645a3233c9.mp4",
-    "method": "wan",
-    "reason": null,
+    "file": "outputs/shots/s03_awash_camels_kenburns_7e2abcf4eb21.mp4",
+    "method": "kenburns",
+    "reason": "preferred in storyboard",
     "duration_s": 8
   },
   "s04_monkeys": {
     "file": "outputs/shots/s04_monkeys_kenburns_58bef4e46287.mp4",
     "method": "kenburns",
-    "reason": "no Wan clip yet",
+    "reason": "preferred in storyboard",
     "duration_s": 6
   },
   "s05_asbe_teferi": {
     "file": "outputs/shots/s05_asbe_teferi_kenburns_8d20e18871a1.mp4",
     "method": "kenburns",
-    "reason": "no Wan clip yet",
+    "reason": "preferred in storyboard",
     "duration_s": 7
   },
   "s06_heat": {
     "file": "outputs/shots/s06_heat_kenburns_dc53302744ec.mp4",
     "method": "kenburns",
-    "reason": "no Wan clip yet",
+    "reason": "preferred in storyboard",
     "duration_s": 7
   },
   "s07_overheat": {
@@ -56,7 +56,7 @@
   "s10_arrival": {
     "file": "outputs/shots/s10_arrival_kenburns_9d17f0053c73.mp4",
     "method": "kenburns",
-    "reason": "no Wan clip yet",
+    "reason": "preferred in storyboard",
     "duration_s": 7
   },
   "s11_kulubi": {
