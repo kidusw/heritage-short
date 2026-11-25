@@ -39,7 +39,17 @@ RUN_ID = os.environ.get("HS_RUN_ID") or datetime.now(timezone.utc).strftime("%Y%
 
 
 def load_env() -> None:
-    """Load .env if python-dotenv is installed. Secrets never live in the repo."""
+    """Load .env if python-dotenv is installed. Secrets never live in the repo.
+
+    Also verify TLS against the OS trust store (truststore) instead of certifi's bundle only: on the
+    work network some HTTPS connections come back with a certificate chain that only the Windows
+    store trusts ("self-signed certificate in certificate chain"; FAILURES.md F9)."""
+    try:
+        import truststore
+
+        truststore.inject_into_ssl()
+    except ImportError:
+        pass
     try:
         from dotenv import load_dotenv
 

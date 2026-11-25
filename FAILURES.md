@@ -46,3 +46,11 @@ What broke, what I tried, what fixed it.
 ## F8. All five free TTS models exhausted in one evening
 - **Broke:** narration stopped after 3 of 18 clips. Two of those three cost two calls each, because gemini-3.8-flash-tts and 3.8-flash-lite-tts spoke the direction and the clip had to be redone. gemini-2.5-flash-preview-tts returned 500 INTERNAL.
 - **Fix:** models caught speaking the direction are saved in `outputs/narration/tts_quirks.json` and never sent a direction again, so each clip costs one call. Lesson for the schedule: debugging cost more quota than the actual film. Final narration runs right after the daily reset (midnight Pacific, 11:00 EAT).
+
+## F9. Work PC: TLS "self-signed certificate in chain" and Kaggle CLI missing `six` (day 2)
+- **Broke:** on the work PC the smoke test failed for Cloudflare and then Kaggle with `CERTIFICATE_VERIFY_FAILED: self-signed certificate in certificate chain`, on different hosts on different runs, while a direct check showed the normal Google Trust Services chain. The network intercepts some HTTPS connections with a certificate that only the Windows store trusts. Separately, the `kaggle` CLI crashed with `ModuleNotFoundError: No module named 'six'`.
+- **Fix:** `load_env()` injects `truststore`, so Python verifies TLS against the OS store (verification stays on). `truststore` and `six` are in requirements.txt.
+
+## F10. flux-1-schnell rejects `seed`
+- **Broke:** the first real Cloudflare call returned 400 `AiError: Bad input: Additional or unevaluated properties '/seed'` (code 5006).
+- **Fix:** `cf_generate` only sends `seed` to models other than flux-1-schnell. Schnell keyframes aren't seed-reproducible; the hash cache is what keeps them stable between runs.

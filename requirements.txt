@@ -3,3 +3,5 @@ python-dotenv>=1.0
 requests>=2.31
 google-genai>=1.0
 kaggle>=2.0
+truststore>=0.9
+six  # kaggle CLI imports it but doesn't declare it

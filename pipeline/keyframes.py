@@ -39,8 +39,12 @@ def cf_generate(prompt: str, seed: int, steps: int = 8) -> bytes:
 
     acct, token = os.environ["CLOUDFLARE_ACCOUNT_ID"], os.environ["CLOUDFLARE_API_TOKEN"]
     url = f"https://api.cloudflare.com/client/v4/accounts/{acct}/ai/run/{CF_MODEL}"
-    r = requests.post(url, headers={"Authorization": f"Bearer {token}"},
-                      json={"prompt": prompt[:2048], "seed": seed, "steps": steps}, timeout=120)
+    payload = {"prompt": prompt[:2048], "steps": steps}
+    # flux-1-schnell's schema rejects "seed" (400, code 5006: unevaluated property '/seed'), so its
+    # output isn't seed-reproducible; the seed still goes into the cache key and runs.jsonl.
+    if "flux-1-schnell" not in CF_MODEL:
+        payload["seed"] = seed
+    r = requests.post(url, headers={"Authorization": f"Bearer {token}"}, json=payload, timeout=120)
     if r.status_code == 429:
         from .common import QuotaError
         raise QuotaError(r.text[:300])
