@@ -15,7 +15,7 @@ import base64
 import json
 import os
 
-from .common import OUTPUTS, shots_blocked_by_consent, cache_key, load_env, load_storyboard, log_call, run_ffmpeg, select_shots, stage_dir, with_retries, write_manifest
+from .common import rel, from_manifest, OUTPUTS, shots_blocked_by_consent, cache_key, load_env, load_storyboard, log_call, run_ffmpeg, select_shots, stage_dir, with_retries, write_manifest
 
 STAGE = "keyframes"
 CF_MODEL = os.environ.get("CF_IMAGE_MODEL", "@cf/black-forest-labs/flux-1-schnell")
@@ -98,7 +98,7 @@ def main(argv=None) -> None:
                                model=model, shot=sid, seed=seed, params=params, output=out)
             out.write_bytes(img)
             print(f"  + {sid}")
-        manifest[sid] = {"file": str(out.relative_to(OUTPUTS.parent)), "prompt": prompt, "seed": seed}
+        manifest[sid] = {"file": rel(out), "prompt": prompt, "seed": seed}
     write_manifest(STAGE, manifest)
 
 

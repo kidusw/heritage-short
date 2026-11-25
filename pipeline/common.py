@@ -199,7 +199,7 @@ def log_call(
         "status": status,
         "cache_hit": cache_hit,
         "attempt": attempt,
-        "output": str(Path(output).relative_to(ROOT)) if output and Path(output).is_absolute() and ROOT in Path(output).parents else (str(output) if output else None),
+        "output": (rel(output) if Path(output).is_absolute() and ROOT in Path(output).parents else str(output).replace("\\", "/")) if output else None,
         "error": error,
     }
     with open(RUNS_LOG, "a", encoding="utf-8") as f:
@@ -283,6 +283,17 @@ def media_duration(path: Path) -> float:
         capture_output=True, text=True, check=True,
     )
     return float(res.stdout.strip())
+
+
+def rel(path) -> str:
+    """Repo-relative path with forward slashes, so manifests written on Windows work on macOS/Linux."""
+    p = Path(path)
+    return (p.relative_to(ROOT) if p.is_absolute() else p).as_posix()
+
+
+def from_manifest(path_str: str) -> Path:
+    """Absolute path for a manifest entry, accepting old Windows-style backslash entries too."""
+    return ROOT / path_str.replace("\\", "/")
 
 
 def write_manifest(stage: str, data: dict) -> Path:
