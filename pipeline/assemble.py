@@ -21,6 +21,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import time
 from pathlib import Path
 
@@ -47,6 +48,26 @@ def font_file() -> str | None:
 
 def ff_escape(text: str) -> str:
     return text.replace("\\", "\\\\").replace(":", "\\:").replace("'", "\u2019").replace("%", "\\%")
+
+
+LOUDNORM = "I=-14:TP=-1.5:LRA=11"
+
+
+def loudnorm_filter(inputs: list[str], af: str, total: float) -> str:
+    """Two-pass loudnorm. Single-pass (dynamic) mode undershot the -14 LUFS target by ~1.3 LU on speech with
+    pauses (FAILURES.md F18), so measure the mix first and apply the measured values in linear mode."""
+    cmd = ["ffmpeg", "-hide_banner", "-nostats", "-y", *[a for i, a in enumerate(inputs) if i >= 2],
+           "-filter_complex", af.replace("[1:a]", "[0:a]").replace("[2:a]", "[1:a]") + f",loudnorm={LOUDNORM}:print_format=json[a]",
+           "-map", "[a]", "-t", f"{total:.3f}", "-f", "null", "-"]
+    res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    blob = res.stderr[res.stderr.rfind("{"):res.stderr.rfind("}") + 1]
+    try:
+        m = json.loads(blob)
+    except ValueError:
+        print("  ! loudnorm measurement failed; falling back to single-pass")
+        return f"loudnorm={LOUDNORM}[a]"
+    return (f"loudnorm={LOUDNORM}:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
+            f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true[a]")
 
 
 def picture_track(sb: dict, timeline: dict, shots: dict, tmp: Path) -> Path:
@@ -130,11 +151,13 @@ def export(sb: dict, lang: str, aspect: str, master: Path, total: float, tmp: Pa
               f"[2:a]aresample=48000,aloop=loop=-1:size=2e9,atrim=0:{total:.3f},volume=-6dB,"
               f"afade=t=in:st=0:d=1.5,afade=t=out:st={max(0, total - 3):.3f}:d=3[mus];"
               f"[mus][key]sidechaincompress=threshold=0.03:ratio={ratio}:attack=30:release=600[ducked];"
-              f"[voice][ducked]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11[a]")
+              f"[voice][ducked]amix=inputs=2:duration=first:normalize=0")
         inputs = ["-i", str(master), "-i", str(radio), "-i", str(music)]
     else:
-        af = "[1:a]aresample=48000,loudnorm=I=-14:TP=-1.5:LRA=11[a]"
+        af = "[1:a]aresample=48000"
         inputs = ["-i", str(master), "-i", str(radio)]
+
+    af += "," + loudnorm_filter(inputs, af, total)
 
     cwd = os.getcwd()
     os.chdir(tmp)

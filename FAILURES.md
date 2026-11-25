@@ -87,3 +87,13 @@ What broke, what I tried, what fixed it.
 - **Broke:** `assemble` on the personal PC: ffmpeg `No option name near '/Windows/Fonts/segoeui.ttf:text=...'`.
 - **Cause:** the escaped `fontfile=C\:/Windows/...` was not quoted, so the filtergraph parser consumed the backslash and the option parser then split on the drive-letter colon. Paths without a colon (Linux/macOS) never hit it.
 - **Fix:** quote the value: `fontfile='C\:/Windows/Fonts/segoeui.ttf'`, the same way `text` already was.
+
+## F18. Final mix 1.3 LU under the -14 LUFS target
+- **Broke:** the first personal-PC export measured -15.3 LUFS integrated (ebur128) against a `loudnorm=I=-14` target.
+- **Cause:** single-pass loudnorm runs in dynamic mode and has to guess the integrated level as it goes; narration with pauses and no music bed lands low.
+- **Fix:** `assemble` measures the mix first (`loudnorm ... print_format=json`, audio only, a few seconds) and applies the measured values with `linear=true`. Re-measured: -13.9 LUFS, true peak -1.4 dBFS.
+
+## F19. ACE-Step candidates came out silent/NaN in fp16
+- **Broke:** after F15 the music kernel no longer OOMed, but all three candidates (seeds 42-44, 19-25 s GPU each) failed the kernel's own check: `generated audio is silent or NaN`.
+- **Cause (likely):** the whole pipeline ran in fp16 because the T4 has no fast bf16, and the Oobleck VAE's snake activations overflow in fp16.
+- **Fix:** the transformer stays fp16 and the VAE runs in fp32. A pre-hook on the VAE decoder casts the latents to fp32 and logs whether they were already non-finite, so if the transformer is the culprit the next error says so.

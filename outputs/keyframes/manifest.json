@@ -1,26 +1,26 @@
 {
   "s03_awash_camels": {
-    "file": "outputs\\keyframes\\s03_awash_camels_2a45ac9b40cc.jpg",
+    "file": "outputs/keyframes/s03_awash_camels_2a45ac9b40cc.jpg",
     "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a white early-1990s Hyundai Elantra sedan with faded paint, a roof rack with a tied-down bag, Ethiopian number plate. a line of camels crossing the highway near Awash, dry acacia scrubland, the car waiting in the distance, hazy midday light Shot: wide, eye level, from the roadside. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
     "seed": 203
   },
   "s04_monkeys": {
-    "file": "outputs\\keyframes\\s04_monkeys_cb627f17e4ca.jpg",
+    "file": "outputs/keyframes/s04_monkeys_cb627f17e4ca.jpg",
     "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. a troop of baboons sitting on a rock wall at the side of the road near Awash, one young baboon looking straight at the camera Shot: medium, low angle. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
     "seed": 204
   },
   "s05_asbe_teferi": {
-    "file": "outputs\\keyframes\\s05_asbe_teferi_12f221d922ef.jpg",
+    "file": "outputs/keyframes/s05_asbe_teferi_12f221d922ef.jpg",
     "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a white early-1990s Hyundai Elantra sedan with faded paint, a roof rack with a tied-down bag, Ethiopian number plate. the small white car on a winding road through dark volcanic rocky mountains near Asbe Teferi, layered ridges, late morning light Shot: extreme wide. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
     "seed": 205
   },
   "s06_heat": {
-    "file": "outputs\\keyframes\\s06_heat_3a01be005035.jpg",
+    "file": "outputs/keyframes/s06_heat_3a01be005035.jpg",
     "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a white early-1990s Hyundai Elantra sedan with faded paint, a roof rack with a tied-down bag, Ethiopian number plate. close-up of the old car's dashboard temperature gauge needle climbing towards red, heat shimmer on the road ahead through the windscreen, dusty lowland Shot: close-up, dashboard. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
     "seed": 206
   },
   "s10_arrival": {
-    "file": "outputs\\keyframes\\s10_arrival_e200ccb6dee1.jpg",
+    "file": "outputs/keyframes/s10_arrival_e200ccb6dee1.jpg",
     "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a white early-1990s Hyundai Elantra sedan with faded paint, a roof rack with a tied-down bag, Ethiopian number plate. the car driving into Dire Dawa at dusk, warm street lights, palm trees, bajaj taxis, the sky orange and violet Shot: wide, dusk. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
     "seed": 210
   }

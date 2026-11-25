@@ -1,7 +1,9 @@
 {
   "s03_awash_camels": {
+    "file": "outputs/shots/wan/s03_awash_camels_0b5b4966d826.mp4",
     "key": "0b5b4966d826",
     "keyframe": "outputs/keyframes/s03_awash_camels_2a45ac9b40cc.jpg",
-    "error": "not reached (notebook stopped early?)"
+    "gpu_s": 928.8,
+    "gpu": "Tesla T4"
   }
 }

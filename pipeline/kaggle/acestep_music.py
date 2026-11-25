@@ -35,6 +35,20 @@ results["gpu"] = torch.cuda.get_device_name(0)
 dtype = {"float16": torch.float16, "bfloat16": torch.bfloat16, "float32": torch.float32}[cfg["dtype"]]
 t0 = time.time()
 pipe = AceStepPipeline.from_pretrained(cfg["model"], torch_dtype=dtype)
+# The Oobleck VAE overflows in fp16 (snake activations) and every candidate came out NaN (FAILURES.md F19):
+# keep the transformer in fp16 for the T4 but run the VAE in fp32. A pre-hook casts the latents to fp32 and
+# records whether they were already non-finite, so the log says which half produced the NaN.
+pipe.vae.to(torch.float32)
+latent_check = {}
+
+
+def _vae_in(module, args):
+    z = args[0]
+    latent_check["finite"] = bool(torch.isfinite(z).all())
+    return (z.float(), *args[1:])
+
+
+pipe.vae.decoder.register_forward_pre_hook(_vae_in)
 # With everything resident on a T4, the Oobleck VAE decode of ~90 s of audio OOMed (FAILURES.md F15).
 # Model offload moves the transformer and text encoder off the GPU before the VAE runs.
 try:
@@ -60,7 +74,7 @@ for cand in SPEC["candidates"]:  # noqa: F821
             arr = arr.T
         import numpy as np
         if not np.isfinite(arr).all() or np.abs(arr).max() < 1e-4:  # silent or NaN (fp16 overflow)
-            raise RuntimeError("generated audio is silent or NaN")
+            raise RuntimeError(f"generated audio is silent or NaN (latents finite: {latent_check.get('finite')})")
         sf.write(os.path.join(WORK, cand["name"] + ".wav"), arr, pipe.sample_rate)
         results["candidates"][cand["name"]] = {"ok": True, "file": cand["name"] + ".wav", "gpu_s": round(time.time() - t0, 1)}
         log(f"{cand['name']}: ok")
