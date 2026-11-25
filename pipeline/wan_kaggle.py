@@ -1,6 +1,7 @@
 """Wan 2.2 image-to-video on a free Kaggle GPU, driven from this machine with the official kaggle CLI.
 
     python -m pipeline.wan_kaggle submit [--shots s03 s04]   # upload keyframes + start the GPU notebook
+    python -m pipeline.wan_kaggle rerun                      # re-push the notebook for the last submission
     python -m pipeline.wan_kaggle status                     # queued / running / complete / error
     python -m pipeline.wan_kaggle collect                    # download clips into outputs/shots/wan/
     python -m pipeline.wan_kaggle run [--shots ...]          # submit, wait, collect
@@ -84,6 +85,25 @@ def save_wan_manifest(m: dict) -> None:
     p.write_text(json.dumps(m, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
+def push_kernel(user: str, cfg: dict, shot_ids: list[str]) -> str:
+    """Push the GPU notebook against whatever version of the keyframes dataset is on Kaggle now."""
+    wd = work_dir()
+    kdir = wd / "kernel"
+    shutil.rmtree(kdir, ignore_errors=True)
+    kdir.mkdir(parents=True)
+    shutil.copy(KERNEL_SRC, kdir / "wan_i2v.py")
+    (kdir / "kernel-metadata.json").write_text(json.dumps({
+        "id": f"{user}/{KERNEL_SLUG}", "title": KERNEL_SLUG, "code_file": "wan_i2v.py", "language": "python",
+        "kernel_type": "script", "is_private": True, "enable_gpu": True, "enable_internet": True,
+        "dataset_sources": [f"{user}/{DATASET_SLUG}"], "competition_sources": [], "kernel_sources": [],
+    }, indent=2), encoding="utf-8")
+    t0 = time.perf_counter()
+    out = kaggle("kernels", "push", "-p", str(kdir), "--accelerator", os.environ.get("WAN_ACCELERATOR", "NvidiaTeslaT4"))
+    log_call(stage=STAGE, provider="kaggle", model="kernels push", latency_s=time.perf_counter() - t0,
+             params={"jobs": shot_ids, **{k: v for k, v in cfg.items() if k != "negative"}})
+    return out
+
+
 def submit(shot_ids: list[str] | None) -> bool:
     sb = load_storyboard()
     cfg = config()
@@ -136,23 +156,21 @@ def submit(shot_ids: list[str] | None) -> bool:
     log_call(stage=STAGE, provider="kaggle", model="datasets upload", latency_s=time.perf_counter() - t0,
              params={"jobs": len(jobs), "images": len(jobs)})
 
-    kdir = wd / "kernel"
-    shutil.rmtree(kdir, ignore_errors=True)
-    kdir.mkdir(parents=True)
-    shutil.copy(KERNEL_SRC, kdir / "wan_i2v.py")
-    (kdir / "kernel-metadata.json").write_text(json.dumps({
-        "id": f"{user}/{KERNEL_SLUG}", "title": KERNEL_SLUG, "code_file": "wan_i2v.py", "language": "python",
-        "kernel_type": "script", "is_private": True, "enable_gpu": True, "enable_internet": True,
-        "dataset_sources": [f"{user}/{DATASET_SLUG}"], "competition_sources": [], "kernel_sources": [],
-    }, indent=2), encoding="utf-8")
-    t0 = time.perf_counter()
-    out = kaggle("kernels", "push", "-p", str(kdir), "--accelerator", os.environ.get("WAN_ACCELERATOR", "NvidiaTeslaT4"))
-    log_call(stage=STAGE, provider="kaggle", model="kernels push", latency_s=time.perf_counter() - t0,
-             params={"jobs": [j["shot"] for j in jobs], **{k: v for k, v in cfg.items() if k != "negative"}})
+    out = push_kernel(user, cfg, [j["shot"] for j in jobs])
     (wd / "submission.json").write_text(json.dumps({"user": user, "submitted": time.time(), "jobs": jobs}, indent=2), encoding="utf-8")
     print(out.strip())
     print(f"wan: submitted {len(jobs)} shots to https://www.kaggle.com/code/{user}/{KERNEL_SLUG}")
     return True
+
+
+def rerun() -> None:
+    """Re-push the notebook for the last submission without re-uploading keyframes (e.g. after a kernel fix).
+    Useful on a machine that doesn't have the keyframe images: the dataset on Kaggle still does."""
+    sub = json.loads((work_dir() / "submission.json").read_text(encoding="utf-8"))
+    print(push_kernel(sub["user"], config(), [j["shot"] for j in sub["jobs"]]).strip())
+    sub["submitted"] = time.time()
+    (work_dir() / "submission.json").write_text(json.dumps(sub, indent=2), encoding="utf-8")
+    print(f"wan: re-ran {len(sub['jobs'])} shots at https://www.kaggle.com/code/{sub['user']}/{KERNEL_SLUG}")
 
 
 def status() -> str:
@@ -204,13 +222,15 @@ def collect() -> None:
 
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("action", choices=["submit", "status", "collect", "run"])
+    ap.add_argument("action", choices=["submit", "rerun", "status", "collect", "run"])
     ap.add_argument("--shots", nargs="*")
     ap.add_argument("--timeout-min", type=int, default=240)
     args = ap.parse_args(argv)
     load_env()
     if args.action == "submit":
         submit(args.shots)
+    elif args.action == "rerun":
+        rerun()
     elif args.action == "status":
         print(status())
     elif args.action == "collect":

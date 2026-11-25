@@ -109,13 +109,15 @@ def main(argv=None) -> None:
     for shot in shots:
         sid, dur = shot["id"], shot["duration_s"]
         kf = keyframes.get(sid)
+        if kf and not from_manifest(kf["file"]).exists():
+            kf = None  # manifest came from git but the image was made on another machine
         wclip = wan.get(sid) if args.method == "auto" and shot.get("video", "wan") == "wan" else None
         if wclip and kf and wclip.get("keyframe", "").replace("\\", "/") != kf["file"].replace("\\", "/"):
             wclip = None  # Wan clip was made from an older keyframe: stale
 
         if sid in blocked or not kf:
             method, reason, src = "placeholder", ("consent pending" if sid in blocked else "no keyframe yet"), None
-        elif wclip and from_manifest(wclip["file"]).exists():
+        elif wclip and wclip.get("file") and from_manifest(wclip["file"]).exists():  # errored runs have no file
             method, reason, src = "wan", None, from_manifest(wclip["file"])
         else:
             method, src = "kenburns", from_manifest(kf["file"])

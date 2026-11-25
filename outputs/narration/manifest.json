@@ -1,79 +1,79 @@
 {
   "am": {
     "s01_departure": {
-      "file": "outputs\\narration\\s01_departure_am_cda8d179b3e3.wav",
-      "model": "gemini-3.8-flash-tts",
-      "duration_s": 5.85,
-      "shot_duration_s": 7,
-      "fits": true
-    },
-    "s02_car": {
-      "file": "outputs\\narration\\s02_car_am_8bea058a4626.wav",
+      "file": "outputs/narration/s01_departure_am_cda8d179b3e3.wav",
       "model": "gemini-3.8-flash-tts",
       "duration_s": 6.3,
       "shot_duration_s": 7,
       "fits": true
     },
-    "s03_awash_camels": {
-      "file": "outputs\\narration\\s03_awash_camels_am_82d3bd836bf9.wav",
+    "s02_car": {
+      "file": "outputs/narration/s02_car_am_8bea058a4626.wav",
       "model": "gemini-3.8-flash-tts",
-      "duration_s": 3.45,
+      "duration_s": 5.75,
+      "shot_duration_s": 7,
+      "fits": true
+    },
+    "s03_awash_camels": {
+      "file": "outputs/narration/s03_awash_camels_am_82d3bd836bf9.wav",
+      "model": "gemini-3.8-flash-tts",
+      "duration_s": 4.0,
       "shot_duration_s": 8,
       "fits": true
     },
     "s04_monkeys": {
-      "file": "outputs\\narration\\s04_monkeys_am_55b60c901298.wav",
-      "model": "gemini-3.8-flash-tts",
-      "duration_s": 3.08,
+      "file": "outputs/narration/s04_monkeys_am_55b60c901298.wav",
+      "model": "gemini-3.8-flash-lite-tts",
+      "duration_s": 3.07,
       "shot_duration_s": 6,
       "fits": true
     },
     "s05_asbe_teferi": {
-      "file": "outputs\\narration\\s05_asbe_teferi_am_8dbcb859a60b.wav",
-      "model": "gemini-3.8-flash-tts",
-      "duration_s": 5.68,
+      "file": "outputs/narration/s05_asbe_teferi_am_8dbcb859a60b.wav",
+      "model": "gemini-3.8-flash-lite-tts",
+      "duration_s": 5.57,
       "shot_duration_s": 7,
       "fits": true
     },
     "s06_heat": {
-      "file": "outputs\\narration\\s06_heat_am_5b14ef96ccc4.wav",
+      "file": "outputs/narration/s06_heat_am_5b14ef96ccc4.wav",
       "model": "gemini-3.8-flash-lite-tts",
-      "duration_s": 4.04,
+      "duration_s": 4.25,
       "shot_duration_s": 7,
       "fits": true
     },
     "s07_overheat": {
-      "file": "outputs\\narration\\s07_overheat_am_e6d6790c9e01.wav",
+      "file": "outputs/narration/s07_overheat_am_e6d6790c9e01.wav",
       "model": "gemini-3.8-flash-lite-tts",
-      "duration_s": 4.08,
+      "duration_s": 4.71,
       "shot_duration_s": 8,
       "fits": true
     },
     "s08_water": {
-      "file": "outputs\\narration\\s08_water_am_9a0f15390fac.wav",
+      "file": "outputs/narration/s08_water_am_9a0f15390fac.wav",
       "model": "gemini-3.8-flash-lite-tts",
-      "duration_s": 5.21,
+      "duration_s": 5.61,
       "shot_duration_s": 9,
       "fits": true
     },
     "s09_together": {
-      "file": "outputs\\narration\\s09_together_am_102a52f5f643.wav",
-      "model": "gemini-3.8-flash-lite-tts",
-      "duration_s": 3.93,
+      "file": "outputs/narration/s09_together_am_102a52f5f643.wav",
+      "model": "gemini-3.1-flash-tts-preview",
+      "duration_s": 5.72,
       "shot_duration_s": 7,
       "fits": true
     },
     "s10_arrival": {
-      "file": "outputs\\narration\\s10_arrival_am_07d812a3d028.wav",
-      "model": "gemini-3.8-flash-lite-tts",
-      "duration_s": 3.52,
+      "file": "outputs/narration/s10_arrival_am_07d812a3d028.wav",
+      "model": "gemini-3.1-flash-tts-preview",
+      "duration_s": 4.96,
       "shot_duration_s": 7,
       "fits": true
     },
     "s11_kulubi": {
-      "file": "outputs\\narration\\s11_kulubi_am_0e9be299f25f.wav",
-      "model": "gemini-3.8-flash-lite-tts",
-      "duration_s": 5.95,
+      "file": "outputs/narration/s11_kulubi_am_0e9be299f25f.wav",
+      "model": "gemini-3.1-flash-tts-preview",
+      "duration_s": 7.68,
       "shot_duration_s": 8,
       "fits": true
     }

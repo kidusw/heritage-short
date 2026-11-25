@@ -67,3 +67,23 @@ What broke, what I tried, what fixed it.
 - **Broke:** the first Wan test (s03) loaded the model in 274 s, then failed after 15 s: `CUDA out of memory ... 14.39 GiB is allocated by PyTorch`, raised while moving the VAE to the GPU inside `prepare_latents`.
 - **Cause:** `enable_model_cpu_offload()` chains text_encoder -> transformer -> vae and offloads each model only when the next one in the chain runs. The I2V pipeline calls `vae.encode` before the transformer, so the ~11 GB fp16 UMT5-XXL text encoder was still on the GPU when the fp32 VAE arrived.
 - **Fix:** the kernel encodes the prompt itself, moves the text encoder to CPU and calls `maybe_free_model_hooks()` before the pipeline runs, then passes `prompt_embeds`. It also turns on VAE tiling and `expandable_segments`.
+
+## F14. Wan kernel OOM-killed (host RAM) after denoising
+- **Broke:** the F13-fixed s03 run loaded the model in 273 s, finished all 30 steps (~15 s/step on a T4), then the log just says `Killed` during VAE decode; `results.json` had no entry for the shot.
+- **Cause:** model CPU offload keeps every component's weights in host RAM. Moving the ~11 GB fp16 UMT5 text encoder to the CPU (F13) only moved the problem: text encoder + 10 GB transformer + fp32 VAE + CUDA context filled the ~30 GB Kaggle VM and the OOM killer stopped the process.
+- **Fix:** the kernel encodes all prompts up front, then sets `pipe.text_encoder = None` and rebuilds the offload hooks so nothing keeps it alive. New `wan_kaggle rerun` re-pushes the notebook for the last submission against the dataset already on Kaggle, so a machine without the keyframe images can retry.
+
+## F15. ACE-Step music: CUDA OOM in the VAE decode on a T4
+- **Broke:** first music run on Kaggle: the model loaded in 73.5 s and each 88 s candidate finished its 8 steps, then all three (seeds 42-44) failed with `CUDA out of memory. Tried to allocate 1.01 GiB` inside the Oobleck VAE `decode` (12 GiB already allocated by PyTorch).
+- **Cause:** the kernel moved the whole pipeline to the GPU with `.to("cuda")`, so the transformer and text encoder were still resident when the VAE decoded 88 s of 48 kHz audio.
+- **Fix:** `enable_model_cpu_offload()` (falls back to `.to("cuda")` if the pipeline has no offload sequence), `expandable_segments`, and `empty_cache()` after a failed candidate.
+
+## F16. shots.py crashed on a fresh clone
+- **Broke:** `KeyError: 'file'` in `pipeline.shots` on the personal PC.
+- **Cause:** an errored Wan run is recorded in `shots/wan/manifest.json` without a `file`, and the keyframes manifest comes from git while the images don't, so a shot could point at a keyframe that isn't on this machine.
+- **Fix:** shots treats a keyframe whose image is missing as "no keyframe yet" (placeholder) and only uses a Wan entry that has a file on disk.
+
+## F17. End-card drawtext broke on a Windows font path
+- **Broke:** `assemble` on the personal PC: ffmpeg `No option name near '/Windows/Fonts/segoeui.ttf:text=...'`.
+- **Cause:** the escaped `fontfile=C\:/Windows/...` was not quoted, so the filtergraph parser consumed the backslash and the option parser then split on the drive-letter colon. Paths without a colon (Linux/macOS) never hit it.
+- **Fix:** quote the value: `fontfile='C\:/Windows/Fonts/segoeui.ttf'`, the same way `text` already was.

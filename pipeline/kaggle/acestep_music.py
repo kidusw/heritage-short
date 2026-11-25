@@ -9,6 +9,7 @@ import time
 import traceback
 
 os.environ.setdefault("HF_HOME", "/tmp/hf")
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 WORK = "/kaggle/working"
 t_start = time.time()
 results = {"spec": SPEC, "candidates": {}}  # noqa: F821 - SPEC is prepended
@@ -33,7 +34,16 @@ cfg = SPEC["config"]  # noqa: F821
 results["gpu"] = torch.cuda.get_device_name(0)
 dtype = {"float16": torch.float16, "bfloat16": torch.bfloat16, "float32": torch.float32}[cfg["dtype"]]
 t0 = time.time()
-pipe = AceStepPipeline.from_pretrained(cfg["model"], torch_dtype=dtype).to("cuda")
+pipe = AceStepPipeline.from_pretrained(cfg["model"], torch_dtype=dtype)
+# With everything resident on a T4, the Oobleck VAE decode of ~90 s of audio OOMed (FAILURES.md F15).
+# Model offload moves the transformer and text encoder off the GPU before the VAE runs.
+try:
+    pipe.enable_model_cpu_offload()
+    results["offload"] = "model"
+except Exception as e:  # noqa: BLE001 - pipeline without an offload sequence
+    log(f"model offload unavailable ({e}); keeping everything on the GPU")
+    pipe.to("cuda")
+    results["offload"] = None
 results["setup_s"] = round(time.time() - t0, 1)
 log(f"loaded {cfg['model']} on {results['gpu']} in {results['setup_s']}s")
 save()
@@ -56,6 +66,7 @@ for cand in SPEC["candidates"]:  # noqa: F821
         log(f"{cand['name']}: ok")
     except Exception as e:  # noqa: BLE001
         traceback.print_exc()
+        torch.cuda.empty_cache()
         results["candidates"][cand["name"]] = {"ok": False, "error": f"{type(e).__name__}: {str(e)[:300]}",
                                                "gpu_s": round(time.time() - t0, 1)}
     save()

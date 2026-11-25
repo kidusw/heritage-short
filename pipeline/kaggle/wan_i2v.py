@@ -4,6 +4,7 @@ Reads jobs.json from the attached keyframes dataset, makes one Wan 2.2 image-to-
 and writes /kaggle/working/<out_name>.mp4 plus results.json (per-shot GPU seconds, errors).
 One failed shot never stops the others: the local pipeline falls back to Ken Burns for it.
 """
+import gc
 import glob
 import json
 import os
@@ -62,25 +63,38 @@ results["setup_s"] = round(time.time() - t0, 1)
 log(f"model loaded in {results['setup_s']}s")
 save(results)
 
+# Encode every prompt first, then drop the text encoder for good. Model offload keeps each component's
+# weights in host RAM; the ~11 GB fp16 UMT5 plus the 10 GB transformer filled the ~30 GB Kaggle VM and the
+# kernel was OOM-killed during VAE decode after denoising finished (FAILURES.md F14). Moving it to the CPU
+# (F13) fixed GPU memory but not host memory.
+embeds = {}
 for job in spec["jobs"]:
-    sid = job["shot"]
-    t0 = time.time()
     try:
-        image = load_image(os.path.join(data_dir, job["image"])).resize((cfg["width"], cfg["height"]))
-        # Model offload chains text_encoder -> image_encoder -> transformer -> vae, but prepare_latents calls
-        # vae.encode before the transformer runs, so the ~11 GB fp16 UMT5 text encoder is still on the GPU
-        # and the fp32 VAE OOMs on a T4 (FAILURES.md F13). Encode the prompt ourselves, offload everything,
-        # then hand the pipeline the embeddings.
         with torch.no_grad():
-            pe, npe = pipe.encode_prompt(
+            embeds[job["shot"]] = pipe.encode_prompt(
                 prompt=job["prompt"], negative_prompt=cfg.get("negative", ""),
                 do_classifier_free_guidance=cfg["guidance"] > 1.0, num_videos_per_prompt=1,
                 device=pipe._execution_device,
             )
-        pipe.text_encoder.to("cpu")
-        pipe.maybe_free_model_hooks()
-        torch.cuda.empty_cache()
-        log(f"{sid}: prompt encoded; GPU allocated {torch.cuda.memory_allocated() / 2**30:.1f} GiB")
+    except Exception as e:  # noqa: BLE001
+        results["jobs"][job["shot"]] = {"ok": False, "error": f"prompt encode: {type(e).__name__}: {str(e)[:300]}", "gpu_s": 0}
+        traceback.print_exc()
+pipe.text_encoder.to("cpu")
+pipe.text_encoder = None
+pipe.maybe_free_model_hooks()  # rebuilds the offload chain without the text encoder, dropping the hooks' references
+gc.collect()
+torch.cuda.empty_cache()
+log(f"prompts encoded; text encoder released; GPU allocated {torch.cuda.memory_allocated() / 2**30:.1f} GiB")
+save(results)
+
+for job in spec["jobs"]:
+    sid = job["shot"]
+    if sid not in embeds:
+        continue
+    t0 = time.time()
+    try:
+        image = load_image(os.path.join(data_dir, job["image"])).resize((cfg["width"], cfg["height"]))
+        pe, npe = embeds[sid]
         frames = pipe(
             image=image, prompt_embeds=pe, negative_prompt_embeds=npe,
             height=cfg["height"], width=cfg["width"], num_frames=cfg["num_frames"],

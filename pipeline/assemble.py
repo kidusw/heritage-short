@@ -115,7 +115,8 @@ def export(sb: dict, lang: str, aspect: str, master: Path, total: float, tmp: Pa
         for j, line in enumerate(lines):
             size = base if j == 0 else int(base * 0.58)
             y = f"(h/2)-{(len(lines) - 1) * base * 0.7:.0f}+{j * base * 1.4:.0f}"
-            draws += (f",drawtext={'fontfile=' + ff_escape(font) + ':' if font else ''}text='{ff_escape(line)}':"
+            fopt = f"fontfile='{ff_escape(font)}':" if font else ""  # quoted: Windows paths have a drive colon
+            draws += (f",drawtext={fopt}text='{ff_escape(line)}':"
                       f"fontcolor=white:fontsize={size}:x=(w-text_w)/2:y={y}:"
                       f"alpha='if(lt(t,{start:.3f}),0,min(1,(t-{start:.3f})/0.6))'")
     vf = f"[0:v]{crop},scale={w}:{h}:flags=lanczos,{subs}{draws},format=yuv420p[v]"

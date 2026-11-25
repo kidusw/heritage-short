@@ -1,7 +1,7 @@
 {
   "s03_awash_camels": {
-    "key": "c6d43441c7dd",
-    "keyframe": "outputs\\keyframes\\s03_awash_camels_2a45ac9b40cc.jpg",
-    "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 108.00 MiB. GPU 0 has a total capacity of 14.56 GiB of which 14.81 MiB is free. Including non-PyTorch memory, this process has 14.54 GiB memory in use. Of the allocated memory 14.39 GiB is allocated by PyTorch, and 28.84 MiB is reserved by PyTorch but unallocate"
+    "key": "0b5b4966d826",
+    "keyframe": "outputs/keyframes/s03_awash_camels_2a45ac9b40cc.jpg",
+    "error": "not reached (notebook stopped early?)"
   }
 }
