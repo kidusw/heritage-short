@@ -20,6 +20,7 @@ Format: **hypothesis → change → result** (with the `run_id` from runs.jsonl 
 - **Follow-up:** gemini-3.8-flash-lite-tts spoke the direction even from `system_instruction` (in batch mode). So per-shot narration now checks each clip's length against its word count; if it is >1.8x, it regenerates once **without** the direction and logs `retry_reason: direction_spoken`.
 
 ## E3. Amharic TTS pronunciation
-- Hypothesis:
-- Change:
-- Result:
+- **Hypothesis:** Gemini Flash TTS pronounces Amharic well enough for a family audience without phonetic respelling.
+- **Change:** storyboard v2 narrated in Amharic (11 clips, run `9943b62` in runs.jsonl); 3 clips transcribed back with gemini-3.5-flash as an automatic check.
+- **Result:** s08 transcribed exactly. s01 "ብዙዎች" (many people) came back as something like "by buses", and s11 "ላይም" came back as "ያም": possible mispronunciations, to confirm by ear. Round-trip transcription is a cheap way to flag words to listen to, not proof of an error.
+- **Also:** no clip needed a "direction spoken" redo; `tts_quirks.json` stopped the direction from reaching the two models that speak it, so each clip cost one successful call. The whole 85 s Amharic cut needed 11 clips (s02 stretched by 0.1 s only).
