@@ -18,7 +18,8 @@ file is current for each shot. Later stages read manifests, never guess file nam
 | narration | storyboard (narration, voices) | `outputs/narration/<shot>_<lang>_<hash>.wav` | Gemini TTS |
 | radio_cut | storyboard, narration manifest | `outputs/radio/radio_<lang>.mp3`, `timeline_<lang>.json`, `subtitles_<lang>_en.srt` | ffmpeg |
 | keyframes | storyboard (style, characters, prompts, seeds) | `outputs/keyframes/<shot>_<hash>.jpg` | Cloudflare Workers AI |
-| shots | keyframes manifest | (day 2) | Wan 2.2 on Kaggle, Ken Burns fallback |
+| wan_kaggle | keyframes manifest, storyboard motion prompts | `outputs/shots/wan/<shot>_<hash>.mp4` + manifest | Wan 2.2 TI2V-5B on a Kaggle T4 (submit / status / collect) |
+| shots | keyframes + wan manifests | `outputs/shots/<shot>_<method>_<hash>.mp4`, 1080x1080, 24 fps, exact shot length | ffmpeg: Wan clip fitted to length, else Ken Burns, else placeholder |
 | music | storyboard.music | (day 2) | ACE-Step 1.5 on Kaggle |
 | assemble | all manifests, radio timeline | (day 3) | ffmpeg |
 
@@ -45,3 +46,13 @@ one `make film`.
 Languages are data, not code: `storyboard.languages` lists them, each shot has `narration.<lang>`, and
 `voices.<lang>` holds the TTS voice. Every stage takes `--lang`. Each language gets its own timeline,
 because Amharic and English readings differ in length; English subtitles are timed to each timeline.
+
+## Moving shots: why two steps
+A Wan run on Kaggle takes tens of minutes to hours (queue, ~23 GB model download, minutes per clip on a T4),
+so it is a separate, asynchronous step: `python -m pipeline.wan_kaggle submit` uploads the keyframes and a
+`jobs.json` as a private Kaggle dataset and pushes a private GPU notebook (`pipeline/kaggle/wan_i2v.py`);
+`collect` downloads the clips and a `results.json` with per-shot GPU seconds into runs.jsonl.
+`pipeline.shots` never waits for the GPU: for each shot it uses the Wan clip if one exists for the current
+keyframe, otherwise a Ken Burns move chosen from the motion prompt's words ("pull-back" -> zoom out,
+"pan right"/"tracking" -> pan, default -> push in). So `make film` always produces a complete cut, and it gets
+better as Wan clips arrive. A shot whose people lack recorded consent becomes a dark placeholder.
