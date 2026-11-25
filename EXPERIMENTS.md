@@ -24,3 +24,9 @@ Format: **hypothesis → change → result** (with the `run_id` from runs.jsonl 
 - **Change:** storyboard v2 narrated in Amharic (11 clips, run `9943b62` in runs.jsonl); 3 clips transcribed back with gemini-3.5-flash as an automatic check.
 - **Result:** s08 transcribed exactly. s01 "ብዙዎች" (many people) came back as something like "by buses", and s11 "ላይም" came back as "ያም": possible mispronunciations, to confirm by ear. Round-trip transcription is a cheap way to flag words to listen to, not proof of an error.
 - **Also:** no clip needed a "direction spoken" redo; `tts_quirks.json` stopped the direction from reaching the two models that speak it, so each clip cost one successful call. The whole 85 s Amharic cut needed 11 clips (s02 stretched by 0.1 s only).
+
+## E4. Wan 2.2 image-to-video on a free Kaggle T4: what it really costs
+- **Hypothesis:** Wan 2.2 TI2V-5B can animate every keyframe on free Kaggle GPU time within the 3-day window.
+- **Change:** `pipeline.wan_kaggle` at 640x640, 81 frames (3.4 s at 24 fps), 30 steps, fp16 transformer, fp32 VAE, CPU offload.
+- **Result (s03, run in runs.jsonl):** three attempts. Run 1 ran out of GPU memory (text encoder stayed on the GPU, F13). Run 2 finished sampling (~15 s/step) and was killed by host-RAM OOM in the VAE decode (F14). Run 3 succeeded: **275.8 s model setup + 929 s GPU for one shot (1278 s for the whole notebook)**, plus about an hour of queue time before it started. Visible artifacts: a camel ends up on the car's roof rack, and a hand enters at the bottom edge.
+- **Implication:** about 20 minutes per shot means about 3 hours of GPU for all 11 shots, before queueing, with artifacts on top. Ken Burns takes about 2 s per shot locally and never fails. Decision pending (DESIGN.md).
