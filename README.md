@@ -4,8 +4,8 @@ A 60–90 second short film about my family's first trip to Dire Dawa and the Sa
 code pipeline instead of by hand. One file, [`storyboard.json`](storyboard.json), is the contract between
 every stage; each stage reads it and writes its own outputs, so changing one shot regenerates only that shot.
 
-> Status: day 1 of 3. Storyboard, narration and radio cut work. Keyframes are wired to Cloudflare
-> Workers AI. Moving shots (Wan 2.2), music (ACE-Step) and assembly land on days 2–3.
+> Status: day 2 of 3. Every stage exists: narration, radio cut, keyframes, moving shots (Wan 2.2 on Kaggle,
+> Ken Burns fallback), music (ACE-Step on Kaggle) and assembly (16:9 + 9:16).
 
 ## Run it
 
@@ -27,6 +27,7 @@ placeholder audio and images through the same stages, cache and logs.
 | `make film LANG=am` | Whole pipeline, Amharic only |
 | `make film SHOTS=s04` | Regenerate one shot through every stage |
 | `python -m pipeline.wan_kaggle run` | Send keyframes to a free Kaggle GPU for Wan 2.2 image-to-video, wait, download the clips |
+| `python -m pipeline.music run` | Three ACE-Step score candidates on Kaggle; then `python -m pipeline.music choose b "why"` |
 | `make costs` | Per-stage table of calls, cache hits, latency, GPU minutes and cost from `runs.jsonl` |
 
 Windows: install ffmpeg with `winget install Gyan.FFmpeg`, and use `python -m pipeline.<stage>` in place of `make`.

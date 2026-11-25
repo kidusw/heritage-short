@@ -23,6 +23,7 @@ import re
 import time
 
 from .common import (
+    rel, from_manifest,
     OUTPUTS, ROOT, cache_key, load_env, load_storyboard, log_call, media_duration, read_manifest,
     run_ffmpeg, select_shots, shots_blocked_by_consent, stage_dir, write_manifest,
 )
@@ -109,15 +110,15 @@ def main(argv=None) -> None:
         sid, dur = shot["id"], shot["duration_s"]
         kf = keyframes.get(sid)
         wclip = wan.get(sid) if args.method == "auto" and shot.get("video", "wan") == "wan" else None
-        if wclip and kf and wclip.get("keyframe") != kf["file"]:
+        if wclip and kf and wclip.get("keyframe", "").replace("\\", "/") != kf["file"].replace("\\", "/"):
             wclip = None  # Wan clip was made from an older keyframe: stale
 
         if sid in blocked or not kf:
             method, reason, src = "placeholder", ("consent pending" if sid in blocked else "no keyframe yet"), None
-        elif wclip and (ROOT / wclip["file"]).exists():
-            method, reason, src = "wan", None, ROOT / wclip["file"]
+        elif wclip and from_manifest(wclip["file"]).exists():
+            method, reason, src = "wan", None, from_manifest(wclip["file"])
         else:
-            method, src = "kenburns", ROOT / kf["file"]
+            method, src = "kenburns", from_manifest(kf["file"])
             reason = "preferred in storyboard" if shot.get("video") == "kenburns" else \
                 (wan.get(sid, {}).get("error") or "no Wan clip yet")
 
@@ -138,7 +139,7 @@ def main(argv=None) -> None:
             log_call(stage=STAGE, provider="local", model=f"ffmpeg-{method}", shot=sid, latency_s=time.perf_counter() - t0,
                      params={"duration_s": dur, "move": move, "reason": reason}, output=out)
             print(f"  + {sid} {method}{f' ({move})' if move else ''}{f' [{reason}]' if reason else ''}")
-        manifest[sid] = {"file": str(out.relative_to(ROOT)), "method": method, "reason": reason, "duration_s": dur}
+        manifest[sid] = {"file": rel(out), "method": method, "reason": reason, "duration_s": dur}
         write_manifest(STAGE, manifest)
 
     counts = {}

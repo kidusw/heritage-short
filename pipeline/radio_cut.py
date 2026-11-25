@@ -15,7 +15,7 @@ from __future__ import annotations
 import argparse
 import json
 
-from .common import OUTPUTS, ROOT, load_storyboard, log_call, read_manifest, run_ffmpeg, stage_dir
+from .common import rel, from_manifest, OUTPUTS, ROOT, load_storyboard, log_call, read_manifest, run_ffmpeg, stage_dir
 
 STAGE = "radio"
 LEAD_IN = 0.4
@@ -53,7 +53,7 @@ def build(sb: dict, lang: str) -> None:
 
         seg = tmp / f"{i:02}_{sid}_{lang}.wav"
         if entry:
-            run_ffmpeg(["-i", str(ROOT / entry["file"]), "-af",
+            run_ffmpeg(["-i", str(from_manifest(entry["file"])), "-af",
                         f"adelay={int(LEAD_IN*1000)},apad,atrim=0:{slot:.3f},aresample=48000", "-ac", "2", str(seg)])
         else:
             run_ffmpeg(["-f", "lavfi", "-i", f"anullsrc=r=48000:cl=stereo", "-t", f"{slot:.3f}", str(seg)])
@@ -86,7 +86,7 @@ def build(sb: dict, lang: str) -> None:
     log_call(stage=STAGE, provider="local", model="ffmpeg", params={"lang": lang, "shots": len(sb["shots"])},
              output=mp3)
     verdict = "OK" if 60 <= t <= 90 else "OUTSIDE 60-90s TARGET"
-    print(f"radio cut [{lang}]: {mp3.relative_to(ROOT)}  {t:.1f}s  ({verdict})")
+    print(f"radio cut [{lang}]: {rel(mp3)}  {t:.1f}s  ({verdict})")
 
 
 def main(argv=None) -> None:

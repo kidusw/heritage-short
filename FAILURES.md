@@ -54,3 +54,11 @@ What broke, what I tried, what fixed it.
 ## F10. flux-1-schnell rejects `seed`
 - **Broke:** the first real Cloudflare call returned 400 `AiError: Bad input: Additional or unevaluated properties '/seed'` (code 5006).
 - **Fix:** `cf_generate` only sends `seed` to models other than flux-1-schnell. Schnell keyframes aren't seed-reproducible; the hash cache is what keeps them stable between runs.
+
+## F11. Manifests written on Windows broke on Linux/macOS
+- **Broke:** the work PC wrote manifest paths like `outputs\keyframes\s03_....jpg`. On Linux `ROOT / "outputs\\keyframes\\..."` is one strange file name, so the shots stage couldn't find any keyframe from a clone on another OS.
+- **Fix:** `common.rel()` writes every manifest/log path with forward slashes, and `common.from_manifest()` reads old backslash entries too. A repo meant to be cloned anywhere must not store OS-specific paths.
+
+## F12. End card cut off in the vertical export
+- **Broke:** the end card text was drawn on the square master, so the 9:16 centre crop (608 of 1080 px wide) cut both lines off. Caught by grabbing a frame from each export, not by any error.
+- **Fix:** the card is blank in the master and its text is drawn after cropping, sized to each frame's width.

@@ -20,8 +20,8 @@ file is current for each shot. Later stages read manifests, never guess file nam
 | keyframes | storyboard (style, characters, prompts, seeds) | `outputs/keyframes/<shot>_<hash>.jpg` | Cloudflare Workers AI |
 | wan_kaggle | keyframes manifest, storyboard motion prompts | `outputs/shots/wan/<shot>_<hash>.mp4` + manifest | Wan 2.2 TI2V-5B on a Kaggle T4 (submit / status / collect) |
 | shots | keyframes + wan manifests | `outputs/shots/<shot>_<method>_<hash>.mp4`, 1080x1080, 24 fps, exact shot length | ffmpeg: Wan clip fitted to length, else Ken Burns, else placeholder |
-| music | storyboard.music | (day 2) | ACE-Step 1.5 on Kaggle |
-| assemble | all manifests, radio timeline | (day 3) | ffmpeg |
+| music | storyboard.music, radio timelines (for length) | `outputs/music/<a|b|c>_<hash>.wav` + manifest {candidates, chosen, why} | ACE-Step 1.5 XL turbo (diffusers) on a Kaggle T4, 3 seeds |
+| assemble | shots + music manifests, radio timeline, narration, subtitles | `outputs/final/<title>_<lang>_<16x9|9x16>.mp4` + .srt | ffmpeg: sidechain ducking, -14 LUFS, burned subtitles, end card drawn per aspect |
 
 ## Caching
 Each output's file name contains `cache_key(...)`: a SHA-256 of **everything that determines it**

@@ -23,6 +23,7 @@ import sys
 import time
 
 from .common import (
+    rel, from_manifest,
     KAGGLE_CLI, OUTPUTS, ROOT, cache_key, load_env, load_storyboard, log_call, read_manifest, select_shots,
     shots_blocked_by_consent, stage_dir,
 )
@@ -105,13 +106,13 @@ def submit(shot_ids: list[str] | None) -> bool:
         if shot.get("video") == "kenburns":
             print(f"  - {sid}: storyboard prefers Ken Burns"); continue
         prompt = f"{shot.get('motion_prompt', '')}. {shot['keyframe_prompt']}. {sb['style']['visual_prefix']}"
-        key = cache_key(STAGE, cfg, kf["file"], prompt, shot.get("seed", 0))
-        if existing.get(sid, {}).get("key") == key and (ROOT / existing[sid].get("file", "")).exists():
+        key = cache_key(STAGE, cfg, kf["file"].replace("\\", "/"), prompt, shot.get("seed", 0))
+        if existing.get(sid, {}).get("key") == key and from_manifest(existing[sid].get("file", "")).exists():
             print(f"  = {sid}: clip already made for these inputs"); continue
-        img_name = os.path.basename(kf["file"])
-        shutil.copy(ROOT / kf["file"], wd / "dataset" / img_name)
+        img_name = from_manifest(kf["file"]).name
+        shutil.copy(from_manifest(kf["file"]), wd / "dataset" / img_name)
         jobs.append({"shot": sid, "image": img_name, "prompt": prompt, "seed": shot.get("seed", 0),
-                     "out_name": f"{sid}_{key}", "key": key, "keyframe": kf["file"]})
+                     "out_name": f"{sid}_{key}", "key": key, "keyframe": kf["file"].replace("\\", "/")})
     if not jobs:
         print("wan: nothing to send")
         return False
@@ -184,7 +185,7 @@ def collect() -> None:
             src = next(dl.rglob(r["file"]), None)
             dst = clip_dir / r["file"]
             shutil.copy(src, dst)
-            manifest[sid] = {"file": str(dst.relative_to(ROOT)), "key": job["key"], "keyframe": job["keyframe"],
+            manifest[sid] = {"file": rel(dst), "key": job["key"], "keyframe": job["keyframe"],
                              "gpu_s": r["gpu_s"], "gpu": res.get("gpu")}
             status_, err = "ok", None
         else:

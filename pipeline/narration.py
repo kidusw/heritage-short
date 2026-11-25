@@ -19,6 +19,7 @@ import wave
 from pathlib import Path
 
 from .common import (
+    rel, from_manifest,
     cache_key, load_env, load_storyboard, log_call, media_duration, run_ffmpeg,
     select_shots, stage_dir, with_retries, write_manifest, OUTPUTS,
 )
@@ -227,7 +228,7 @@ def main(argv=None) -> None:
     def record(lang, shot, out, model):
         dur = media_duration(out)
         fits = dur <= shot["duration_s"] - 0.3
-        manifest[lang][shot["id"]] = {"file": str(out.relative_to(OUTPUTS.parent)), "model": model, "duration_s": round(dur, 2),
+        manifest[lang][shot["id"]] = {"file": rel(out), "model": model, "duration_s": round(dur, 2),
                                       "shot_duration_s": shot["duration_s"], "fits": fits}
         write_manifest(STAGE, manifest)  # after every clip, so a crash keeps progress
         if not fits:
@@ -246,7 +247,7 @@ def main(argv=None) -> None:
             text = shot["narration"].get(lang, "").strip()
             want = f"{shot['id']}_{lang}_{cache_key(STAGE, CACHE_VERSION, provider, model_setting, text, voice)}.wav"
             entry = manifest[lang].get(shot["id"])
-            if entry and Path(entry["file"]).name != want:
+            if entry and from_manifest(entry["file"]).name != want:
                 del manifest[lang][shot["id"]]
         for sid in [k for k in manifest[lang] if k not in {s_["id"] for s_ in sb["shots"]}]:
             del manifest[lang][sid]
