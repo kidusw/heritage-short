@@ -31,7 +31,9 @@ def config() -> dict:
     e = os.environ.get
     return {"model": e("ACESTEP_MODEL", "ACE-Step/acestep-v15-xl-turbo-diffusers"),
             "steps": int(e("ACESTEP_STEPS", "8")), "guidance": float(e("ACESTEP_GUIDANCE", "1.0")),
-            "dtype": e("ACESTEP_DTYPE", "float16")}  # T4 has no fast bf16
+            # fp16 overflows in the transformer (NaN latents, FAILURES.md F19). T4 has no native bf16, so this is
+            # slower, but bf16 keeps fp32's range; 8 turbo steps make the cost small.
+            "dtype": e("ACESTEP_DTYPE", "bfloat16")}
 
 
 def manifest() -> dict:

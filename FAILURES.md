@@ -97,3 +97,4 @@ What broke, what I tried, what fixed it.
 - **Broke:** after F15 the music kernel no longer OOMed, but all three candidates (seeds 42-44, 19-25 s GPU each) failed the kernel's own check: `generated audio is silent or NaN`.
 - **Cause (likely):** the whole pipeline ran in fp16 because the T4 has no fast bf16, and the Oobleck VAE's snake activations overflow in fp16.
 - **Fix:** the transformer stays fp16 and the VAE runs in fp32. A pre-hook on the VAE decoder casts the latents to fp32 and logs whether they were already non-finite, so if the transformer is the culprit the next error says so.
+- **Follow-up:** the next run (VAE in fp32) still failed, and the pre-hook logged `latents finite: False` for all three seeds, so the NaNs come from the fp16 transformer, not the VAE. The default dtype is now bfloat16 (fp32 range; emulated and slower on a T4). If that is too slow or still fails, the fallback is the smaller non-XL ACE-Step 1.5 turbo in fp32.
