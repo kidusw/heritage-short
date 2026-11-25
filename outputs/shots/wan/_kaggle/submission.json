@@ -1,0 +1,15 @@
+{
+  "user": "kidusworkneh",
+  "submitted": 1795614355.7625077,
+  "jobs": [
+    {
+      "shot": "s03_awash_camels",
+      "image": "s03_awash_camels_2a45ac9b40cc.jpg",
+      "prompt": "camels walk slowly across frame from left to right. a line of camels crossing the highway near Awash, dry acacia scrubland, the car waiting in the distance, hazy midday light. Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel.",
+      "seed": 203,
+      "out_name": "s03_awash_camels_0b5b4966d826",
+      "key": "0b5b4966d826",
+      "keyframe": "outputs/keyframes/s03_awash_camels_2a45ac9b40cc.jpg"
+    }
+  ]
+}

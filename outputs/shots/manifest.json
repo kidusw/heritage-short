@@ -1,0 +1,68 @@
+{
+  "s01_departure": {
+    "file": "outputs\\shots\\s01_departure_placeholder_67ed1751d151.mp4",
+    "method": "placeholder",
+    "reason": "consent pending",
+    "duration_s": 7
+  },
+  "s02_car": {
+    "file": "outputs\\shots\\s02_car_placeholder_67ed1751d151.mp4",
+    "method": "placeholder",
+    "reason": "consent pending",
+    "duration_s": 7
+  },
+  "s03_awash_camels": {
+    "file": "outputs\\shots\\s03_awash_camels_kenburns_7e2abcf4eb21.mp4",
+    "method": "kenburns",
+    "reason": "no Wan clip yet",
+    "duration_s": 8
+  },
+  "s04_monkeys": {
+    "file": "outputs\\shots\\s04_monkeys_kenburns_58bef4e46287.mp4",
+    "method": "kenburns",
+    "reason": "no Wan clip yet",
+    "duration_s": 6
+  },
+  "s05_asbe_teferi": {
+    "file": "outputs\\shots\\s05_asbe_teferi_kenburns_8d20e18871a1.mp4",
+    "method": "kenburns",
+    "reason": "no Wan clip yet",
+    "duration_s": 7
+  },
+  "s06_heat": {
+    "file": "outputs\\shots\\s06_heat_kenburns_dc53302744ec.mp4",
+    "method": "kenburns",
+    "reason": "no Wan clip yet",
+    "duration_s": 7
+  },
+  "s07_overheat": {
+    "file": "outputs\\shots\\s07_overheat_placeholder_c7954e68cf72.mp4",
+    "method": "placeholder",
+    "reason": "consent pending",
+    "duration_s": 8
+  },
+  "s08_water": {
+    "file": "outputs\\shots\\s08_water_placeholder_904424e51b6b.mp4",
+    "method": "placeholder",
+    "reason": "consent pending",
+    "duration_s": 9
+  },
+  "s09_together": {
+    "file": "outputs\\shots\\s09_together_placeholder_67ed1751d151.mp4",
+    "method": "placeholder",
+    "reason": "consent pending",
+    "duration_s": 7
+  },
+  "s10_arrival": {
+    "file": "outputs\\shots\\s10_arrival_kenburns_9d17f0053c73.mp4",
+    "method": "kenburns",
+    "reason": "no Wan clip yet",
+    "duration_s": 7
+  },
+  "s11_kulubi": {
+    "file": "outputs\\shots\\s11_kulubi_placeholder_c7954e68cf72.mp4",
+    "method": "placeholder",
+    "reason": "consent pending",
+    "duration_s": 8
+  }
+}

@@ -13,6 +13,7 @@ import time
 import traceback
 
 os.environ.setdefault("HF_HOME", "/tmp/hf")  # /kaggle/working is only ~20 GB; the weights are ~23 GB
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 WORK = "/kaggle/working"
 RESULTS = os.path.join(WORK, "results.json")
 t_start = time.time()
@@ -53,6 +54,10 @@ t0 = time.time()
 vae = AutoencoderKLWan.from_pretrained(cfg["model"], subfolder="vae", torch_dtype=torch.float32)
 pipe = WanImageToVideoPipeline.from_pretrained(cfg["model"], vae=vae, torch_dtype=dtype)
 pipe.enable_model_cpu_offload()  # 5B transformer + UMT5-XXL don't fit together in 15 GB
+try:
+    pipe.vae.enable_tiling()  # fp32 VAE decode of 81 frames is the other big allocation
+except Exception as e:  # noqa: BLE001
+    log(f"vae tiling unavailable: {e}")
 results["setup_s"] = round(time.time() - t0, 1)
 log(f"model loaded in {results['setup_s']}s")
 save(results)
@@ -62,8 +67,22 @@ for job in spec["jobs"]:
     t0 = time.time()
     try:
         image = load_image(os.path.join(data_dir, job["image"])).resize((cfg["width"], cfg["height"]))
+        # Model offload chains text_encoder -> image_encoder -> transformer -> vae, but prepare_latents calls
+        # vae.encode before the transformer runs, so the ~11 GB fp16 UMT5 text encoder is still on the GPU
+        # and the fp32 VAE OOMs on a T4 (FAILURES.md F13). Encode the prompt ourselves, offload everything,
+        # then hand the pipeline the embeddings.
+        with torch.no_grad():
+            pe, npe = pipe.encode_prompt(
+                prompt=job["prompt"], negative_prompt=cfg.get("negative", ""),
+                do_classifier_free_guidance=cfg["guidance"] > 1.0, num_videos_per_prompt=1,
+                device=pipe._execution_device,
+            )
+        pipe.text_encoder.to("cpu")
+        pipe.maybe_free_model_hooks()
+        torch.cuda.empty_cache()
+        log(f"{sid}: prompt encoded; GPU allocated {torch.cuda.memory_allocated() / 2**30:.1f} GiB")
         frames = pipe(
-            image=image, prompt=job["prompt"], negative_prompt=cfg.get("negative", ""),
+            image=image, prompt_embeds=pe, negative_prompt_embeds=npe,
             height=cfg["height"], width=cfg["width"], num_frames=cfg["num_frames"],
             num_inference_steps=cfg["steps"], guidance_scale=cfg["guidance"],
             generator=torch.Generator("cpu").manual_seed(job["seed"]),

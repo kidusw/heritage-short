@@ -49,7 +49,7 @@ What broke, what I tried, what fixed it.
 
 ## F9. Work PC: TLS "self-signed certificate in chain" and Kaggle CLI missing `six` (day 2)
 - **Broke:** on the work PC the smoke test failed for Cloudflare and then Kaggle with `CERTIFICATE_VERIFY_FAILED: self-signed certificate in certificate chain`, on different hosts on different runs, while a direct check showed the normal Google Trust Services chain. The network intercepts some HTTPS connections with a certificate that only the Windows store trusts. Separately, the `kaggle` CLI crashed with `ModuleNotFoundError: No module named 'six'`.
-- **Fix:** `load_env()` injects `truststore`, so Python verifies TLS against the OS store (verification stays on). `truststore` and `six` are in requirements.txt.
+- **Fix:** `load_env()` injects `truststore`, so Python verifies TLS against the OS store (verification stays on). The kaggle CLI runs in a subprocess the injection doesn't reach, so `common.KAGGLE_CLI` launches it through a stub that injects truststore first. `truststore` and `six` are in requirements.txt.
 
 ## F10. flux-1-schnell rejects `seed`
 - **Broke:** the first real Cloudflare call returned 400 `AiError: Bad input: Additional or unevaluated properties '/seed'` (code 5006).
@@ -62,3 +62,8 @@ What broke, what I tried, what fixed it.
 ## F12. End card cut off in the vertical export
 - **Broke:** the end card text was drawn on the square master, so the 9:16 centre crop (608 of 1080 px wide) cut both lines off. Caught by grabbing a frame from each export, not by any error.
 - **Fix:** the card is blank in the master and its text is drawn after cropping, sized to each frame's width.
+
+## F13. Wan 2.2 TI2V-5B ran out of GPU memory on a Kaggle T4
+- **Broke:** the first Wan test (s03) loaded the model in 274 s, then failed after 15 s: `CUDA out of memory ... 14.39 GiB is allocated by PyTorch`, raised while moving the VAE to the GPU inside `prepare_latents`.
+- **Cause:** `enable_model_cpu_offload()` chains text_encoder -> transformer -> vae and offloads each model only when the next one in the chain runs. The I2V pipeline calls `vae.encode` before the transformer, so the ~11 GB fp16 UMT5-XXL text encoder was still on the GPU when the fp32 VAE arrived.
+- **Fix:** the kernel encodes the prompt itself, moves the text encoder to CPU and calls `maybe_free_model_hooks()` before the pipeline runs, then passes `prompt_embeds`. It also turns on VAE tiling and `expandable_segments`.
