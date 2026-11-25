@@ -23,7 +23,7 @@ import sys
 import time
 
 from .common import (
-    OUTPUTS, ROOT, cache_key, load_env, load_storyboard, log_call, read_manifest, select_shots,
+    KAGGLE_CLI, OUTPUTS, ROOT, cache_key, load_env, load_storyboard, log_call, read_manifest, select_shots,
     shots_blocked_by_consent, stage_dir,
 )
 from .smoke import kaggle_env
@@ -52,7 +52,7 @@ def kaggle(*args: str, check: bool = True) -> str:
     extra = kaggle_env()
     if extra is None:
         raise SystemExit("Kaggle credentials missing: set KAGGLE_API_TOKEN (or KAGGLE_USERNAME + KAGGLE_KEY) in .env")
-    res = subprocess.run([sys.executable, "-m", "kaggle.cli", *args], capture_output=True, text=True,
+    res = subprocess.run([*KAGGLE_CLI, *args], capture_output=True, text=True,
                          env={**os.environ, **extra, "PYTHONIOENCODING": "utf-8"})
     if check and res.returncode != 0:
         raise RuntimeError(f"kaggle {' '.join(args)} failed:\n{res.stderr or res.stdout}")

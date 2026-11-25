@@ -58,6 +58,13 @@ def load_env() -> None:
         pass
 
 
+# The kaggle CLI runs in a subprocess, so the truststore injection above doesn't reach it (FAILURES.md F9).
+# Launch it through a stub that injects truststore first, falling back to plain kaggle.cli without it.
+KAGGLE_CLI = [sys.executable, "-c",
+              "try:\n import truststore; truststore.inject_into_ssl()\nexcept ImportError:\n pass\n"
+              "import runpy, sys; sys.argv[0] = 'kaggle'; runpy.run_module('kaggle.cli', run_name='__main__')"]
+
+
 def require_env(*names: str) -> dict[str, str]:
     missing = [n for n in names if not os.environ.get(n)]
     if missing:

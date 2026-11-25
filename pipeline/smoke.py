@@ -12,7 +12,7 @@ import os
 import time
 from pathlib import Path
 
-from .common import load_env, log_call, stage_dir
+from .common import KAGGLE_CLI, load_env, log_call, stage_dir
 
 STAGE = "smoke"
 
@@ -82,7 +82,7 @@ def check_kaggle() -> str:
     if extra is None:
         return "SKIPPED (set KAGGLE_API_TOKEN, or KAGGLE_USERNAME + KAGGLE_KEY)"
     t0 = time.perf_counter()
-    res = subprocess.run([sys.executable, "-m", "kaggle.cli", "kernels", "list", "--mine", "--page-size", "5"],
+    res = subprocess.run([*KAGGLE_CLI, "kernels", "list", "--mine", "--page-size", "5"],
                          capture_output=True, text=True, env={**os.environ, **extra}, timeout=120)
     ok = res.returncode == 0
     err = (res.stderr or res.stdout).strip().splitlines()[-1:] if not ok else None
