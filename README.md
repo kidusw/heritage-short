@@ -26,6 +26,7 @@ placeholder audio and images through the same stages, cache and logs.
 | `make radio` | Narration for every shot + the narration-only "radio cut" for each language |
 | `make film LANG=am` | Whole pipeline, Amharic only |
 | `make film SHOTS=s04` | Regenerate one shot through every stage |
+| `python -m pipeline.wan_kaggle run` | Send keyframes to a free Kaggle GPU for Wan 2.2 image-to-video, wait, download the clips |
 | `make costs` | Per-stage table of calls, cache hits, latency, GPU minutes and cost from `runs.jsonl` |
 
 Windows: install ffmpeg with `winget install Gyan.FFmpeg`, and use `python -m pipeline.<stage>` in place of `make`.
