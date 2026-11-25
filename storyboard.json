@@ -1,6 +1,6 @@
 {
   "title": "The Long Road to Dire Dawa",
-  "version": 2,
+  "version": 3,
   "languages": [
     "am",
     "en"
@@ -87,7 +87,8 @@
       "narration": {
         "am": "በየዓመቱ ብዙዎች ለቅዱስ ገብርኤል ወደ ቁልቢ ይጓዛሉ። በዚያ ዓመት እኛም ሄድን።",
         "en": "Every year, Ethiopians travel to Kulubi for Saint Gabriel. That year, my family went too."
-      }
+      },
+      "video": "kenburns"
     },
     {
       "id": "s02_car",
@@ -107,7 +108,8 @@
       "narration": {
         "am": "አምስታችን በአሮጌዋ ኤላንትራ መኪናችን ውስጥ፤ ፊታችን አምስት መቶ ሃያ አምስት ኪሎ ሜትር።",
         "en": "Five of us, packed into our old Elantra, with 525 kilometres ahead."
-      }
+      },
+      "video": "kenburns"
     },
     {
       "id": "s03_awash_camels",
@@ -123,7 +125,8 @@
       "narration": {
         "am": "አዋሽ ላይ ግመሎች መንገዱ የነሱ እንደሆነ ሁሉ ተሻገሩ።",
         "en": "At Awash, camels crossed the road as if they owned it."
-      }
+      },
+      "video": "kenburns"
     },
     {
       "id": "s04_monkeys",
@@ -136,7 +139,8 @@
       "narration": {
         "am": "ዝንጀሮዎች ከመንገዱ ዳር ሆነው በጉጉት ያዩን ነበር።",
         "en": "Monkeys watched us from the roadside, curious about the travellers."
-      }
+      },
+      "video": "kenburns"
     },
     {
       "id": "s05_asbe_teferi",
@@ -152,7 +156,8 @@
       "narration": {
         "am": "አሰበ ተፈሪ አካባቢ መሬቱ ወደ ጥቁር የእሳተ ገሞራ አለትና ተራራ ተለወጠ።",
         "en": "Near Asbe Teferi, the land rose into dark volcanic rock and mountains."
-      }
+      },
+      "video": "kenburns"
     },
     {
       "id": "s06_heat",
@@ -168,7 +173,8 @@
       "narration": {
         "am": "ከዚያ መንገዱ ወደ ቆላው ወረደ፤ ሙቀቱም አብሮ መጣ።",
         "en": "Then the road dropped toward the lowlands, and the heat came with it."
-      }
+      },
+      "video": "kenburns"
     },
     {
       "id": "s07_overheat",
@@ -188,7 +194,8 @@
       "narration": {
         "am": "አሮጌዋ መኪናችን አልቻለችም። ከሞተሩ እንፋሎት ይወጣ ጀመር።",
         "en": "Our old car could not take it. Steam rose from the engine."
-      }
+      },
+      "video": "kenburns"
     },
     {
       "id": "s08_water",
@@ -206,7 +213,8 @@
       "narration": {
         "am": "በየጥቂት ኪሎ ሜትሩ እንቆማለን፤ አባቴ ሞተሩን ለማቀዝቀዝ ውሃ ያፈስበታል።",
         "en": "Every few kilometres we stopped, and my father poured water on the engine to cool it."
-      }
+      },
+      "video": "kenburns"
     },
     {
       "id": "s09_together",
@@ -227,7 +235,8 @@
       "narration": {
         "am": "በጣም የማስታውሰው ያንን ነው፤ ሁላችንም አብረን በመንገድ ዳር ስንጠብቅ።",
         "en": "That is what I remember most: all of us, waiting together by the road."
-      }
+      },
+      "video": "kenburns"
     },
     {
       "id": "s10_arrival",
@@ -243,7 +252,8 @@
       "narration": {
         "am": "ቀስ በቀስ፣ ቆም እያልን፣ ድሬዳዋ ደረስን።",
         "en": "Slowly, stop by stop, we reached Dire Dawa."
-      }
+      },
+      "video": "kenburns"
     },
     {
       "id": "s11_kulubi",
@@ -263,7 +273,8 @@
       "narration": {
         "am": "ቁልቢ ላይም በነጭ ከለበሱ በሺዎች መካከል፣ በአንድነት በቅዱስ ገብርኤል ፊት ቆምን።",
         "en": "And at Kulubi, among thousands in white, we stood together before Saint Gabriel."
-      }
+      },
+      "video": "kenburns"
     }
   ]
 }

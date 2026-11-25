@@ -28,6 +28,9 @@ the world: camels at Awash, monkeys, Asbe Teferi's volcanic rock. 6-7. Heat rise
 together by the road. 10. Arrival in Dire Dawa. 11. Kulubi: why we went.
 Each shot's reason is in its `purpose` field in `storyboard.json`.
 
+## Motion decision
+Every shot uses a Ken Burns move chosen from its `motion_prompt` (`video: "kenburns"` in the storyboard). Wan 2.2 cost ~20 GPU-minutes per shot on a free T4 and its one test clip had visible artifacts (EXPERIMENTS.md E4), so it stays a measured experiment (E5) rather than a dependency of the film.
+
 ## User test 1: radio cut (narration only)
 - Date:
 - Who (3+ from the audience):

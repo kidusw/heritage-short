@@ -29,4 +29,9 @@ Format: **hypothesis → change → result** (with the `run_id` from runs.jsonl 
 - **Hypothesis:** Wan 2.2 TI2V-5B can animate every keyframe on free Kaggle GPU time within the 3-day window.
 - **Change:** `pipeline.wan_kaggle` at 640x640, 81 frames (3.4 s at 24 fps), 30 steps, fp16 transformer, fp32 VAE, CPU offload.
 - **Result (s03, run in runs.jsonl):** three attempts. Run 1 ran out of GPU memory (text encoder stayed on the GPU, F13). Run 2 finished sampling (~15 s/step) and was killed by host-RAM OOM in the VAE decode (F14). Run 3 succeeded: **275.8 s model setup + 929 s GPU for one shot (1278 s for the whole notebook)**, plus about an hour of queue time before it started. Visible artifacts: a camel ends up on the car's roof rack, and a hand enters at the bottom edge.
-- **Implication:** about 20 minutes per shot means about 3 hours of GPU for all 11 shots, before queueing, with artifacts on top. Ken Burns takes about 2 s per shot locally and never fails. Decision pending (DESIGN.md).
+- **Implication:** about 20 minutes per shot means about 3 hours of GPU for all 11 shots, before queueing, with artifacts on top. Ken Burns takes about 2 s per shot locally and never fails. **Decision (25 Nov): Ken Burns for every shot in the film**; Wan kept as an experiment (E5).
+
+## E5. Blind test: Wan 2.2 vs Ken Burns on the same still (s03, camels at Awash)
+- **Hypothesis:** viewers prefer real generated motion (Wan) over a pan/zoom on a still, enough to justify ~20 GPU-minutes per shot.
+- **Method:** `python -m pipeline.abtest s03` renders both versions at the same length and size, labelled A/B in random order (key kept in `outputs/abtest/s03_key.json`). Viewers watch both without being told which is which, and answer: "Which feels more like a real memory, and why?"
+- **Result:** _votes and quotes from 3+ viewers to fill in._
