@@ -1,6 +1,6 @@
-# The Road to Dire Dawa: a Heritage Short pipeline
+# The Long Road to Dire Dawa: a Heritage Short pipeline
 
-A 60–90 second short film about my trip to Dire Dawa, narrated in **English and Amharic**, made by a
+A 60–90 second short film about my family's first trip to Dire Dawa and the Saint Gabriel celebration at Kulubi, narrated in **Amharic with English subtitles** (an English-narrated cut is one flag away: `--lang en`), made by a
 code pipeline instead of by hand. One file, [`storyboard.json`](storyboard.json), is the contract between
 every stage; each stage reads it and writes its own outputs, so changing one shot regenerates only that shot.
 

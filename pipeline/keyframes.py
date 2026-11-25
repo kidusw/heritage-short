@@ -15,7 +15,7 @@ import base64
 import json
 import os
 
-from .common import OUTPUTS, cache_key, load_env, load_storyboard, log_call, run_ffmpeg, select_shots, stage_dir, with_retries, write_manifest
+from .common import OUTPUTS, shots_blocked_by_consent, cache_key, load_env, load_storyboard, log_call, run_ffmpeg, select_shots, stage_dir, with_retries, write_manifest
 
 STAGE = "keyframes"
 CF_MODEL = os.environ.get("CF_IMAGE_MODEL", "@cf/black-forest-labs/flux-1-schnell")
@@ -69,7 +69,13 @@ def main(argv=None) -> None:
     mpath = OUTPUTS / STAGE / "manifest.json"
     manifest = json.loads(mpath.read_text(encoding="utf-8")) if mpath.exists() else {}
 
-    for i, shot in enumerate(select_shots(sb, args.shots)):
+    shots = select_shots(sb, args.shots)
+    blocked = shots_blocked_by_consent(sb, shots)
+    for sid, refs in blocked.items():
+        print(f"  x {sid} skipped: no recorded consent for {', '.join(refs)} (see ETHICS.md)")
+    for i, shot in enumerate(shots):
+        if shot["id"] in blocked:
+            continue
         sid, seed = shot["id"], shot.get("seed", 0)
         prompt = build_prompt(sb, shot)
         params = {"steps": args.steps, "prompt": prompt}

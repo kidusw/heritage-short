@@ -2,7 +2,7 @@
 
     python -m pipeline.validate
 """
-from .common import StoryboardError, load_storyboard, total_duration
+from .common import StoryboardError, consent_status, load_storyboard, shots_blocked_by_consent, total_duration
 
 
 def main(argv=None) -> None:
@@ -13,6 +13,12 @@ def main(argv=None) -> None:
     t = total_duration(sb)
     print(f"storyboard OK: '{sb['title']}' v{sb['version']}, {len(sb['shots'])} shots, "
           f"{t:.0f}s planned ({'within' if 60 <= t <= 90 else 'OUTSIDE'} 60-90s), languages {sb['languages']}")
+    status = consent_status(sb)
+    if status:
+        print("consent: " + ", ".join(f"{k}={'granted' if v else 'PENDING'}" for k, v in status.items()))
+        blocked = shots_blocked_by_consent(sb, sb["shots"])
+        if blocked:
+            print(f"  images blocked until consent is recorded in ETHICS.md: {', '.join(blocked)}")
     for s in sb["shots"]:
         words = {l: len(s["narration"].get(l, "").split()) for l in sb["languages"]}
         print(f"  {s['id']:<16} {s['duration_s']:>4}s  words {words}  {s['purpose']}")

@@ -97,6 +97,35 @@ def load_storyboard(path: Path = STORYBOARD) -> dict:
     return sb
 
 
+def consent_status(sb: dict) -> dict[str, bool]:
+    """Map consent_ref -> granted, read from the consent table in ETHICS.md.
+    A row counts as granted only if one of its cells is exactly 'granted'."""
+    granted: dict[str, bool] = {}
+    ethics = ROOT / "ETHICS.md"
+    rows = ethics.read_text(encoding="utf-8").splitlines() if ethics.exists() else []
+    for c in sb.get("characters", []):
+        ref = c.get("consent_ref")
+        if not c.get("real_person"):
+            continue
+        cells_for_ref = [[x.strip().lower() for x in r.strip().strip("|").split("|")] for r in rows
+                         if r.lstrip().startswith("|") and f"`{ref}`" in r]
+        granted[ref] = any("granted" in cells for cells in cells_for_ref)
+    return granted
+
+
+def shots_blocked_by_consent(sb: dict, shots: list[dict]) -> dict[str, list[str]]:
+    """Shots that depict a real person whose consent isn't recorded as granted: shot id -> missing refs.
+    No image or video of a real person is generated until consent is in ETHICS.md."""
+    status = consent_status(sb)
+    ref_of = {c["id"]: c.get("consent_ref") for c in sb.get("characters", []) if c.get("real_person")}
+    blocked = {}
+    for s in shots:
+        missing = [ref_of[c] for c in s.get("characters", []) if c in ref_of and not status.get(ref_of[c])]
+        if missing:
+            blocked[s["id"]] = missing
+    return blocked
+
+
 def total_duration(sb: dict) -> float:
     return sum(s["duration_s"] for s in sb["shots"]) + sb.get("end_card", {}).get("duration_s", 0)
 

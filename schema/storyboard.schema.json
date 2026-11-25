@@ -38,7 +38,7 @@
           "id": { "$ref": "#/$defs/id" },
           "description": { "type": "string", "description": "Fixed visual description reused verbatim in every shot the character appears in." },
           "real_person": { "type": "boolean", "default": false, "description": "True if this depicts a real person. Requires a consent entry in ETHICS.md." },
-          "consent_ref": { "type": "string", "description": "Pointer to the consent record in ETHICS.md." }
+          "consent_ref": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "Id of the consent row in ETHICS.md. Keyframes/shots for this character are refused until that row says granted." }
         },
         "if": { "properties": { "real_person": { "const": true } }, "required": ["real_person"] },
         "then": { "required": ["consent_ref"] }
