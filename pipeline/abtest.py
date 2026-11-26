@@ -30,7 +30,10 @@ def main(argv=None) -> None:
     out = stage_dir("abtest")
     variants = {"wan": out / f"_{sid}_wan.mp4", "kenburns": out / f"_{sid}_kb.mp4"}
     fit_wan_clip(from_manifest(wan["file"]), variants["wan"], dur)
-    kenburns(from_manifest(kf["file"]), variants["kenburns"], dur, kenburns_move(shot))
+    # Ken Burns on the very still the Wan clip was made from, not the current keyframe: the storyboard may have
+    # moved on since (v5 recoloured the car), and the test only compares motion methods.
+    still = from_manifest(wan["keyframe"]) if wan.get("keyframe") and from_manifest(wan["keyframe"]).exists() else from_manifest(kf["file"])
+    kenburns(still, variants["kenburns"], dur, kenburns_move(shot))
     order = random.sample(["wan", "kenburns"], 2)
     key = {}
     for label, method in zip("AB", order):

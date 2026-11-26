@@ -68,7 +68,13 @@ Assumptions: the clip length is an average (the radio cut is 85 s for 11 lines i
 
 ## Cost per finished film
 
-One clean run with a warm cache costs about **$0.02**: 11 TTS clips (about $0.01), 11 keyframes (about $0.01, free in practice) and 3 music candidates (about 3 GPU-minutes, about $0.02). Assembling is local and free. The spending went on iteration: re-takes for spoken style directions, storyboard rewrites v1 to v6, and the music and Wan failures above.
+One clean run with a warm cache costs about **$0.02**: 11 TTS clips (about $0.01), 11 keyframes (about $0.01, free in practice) and 3 music candidates (about 3 GPU-minutes, about $0.02). Assembling is local and free. The spending went on iteration: re-takes for spoken style directions, storyboard rewrites v1 to v7, and the music and Wan failures above.
+
+## Family shots on Gemini (built, not run)
+
+The six family shots are set to use Gemini image generation with a reference portrait per person (E8). On this key, every Gemini image model has a free-tier limit of 0 (F23), so nothing was spent: the 12 refused calls on 26 Nov cost $0. With billing on, Gemini 2.5 Flash Image is listed at about $0.039 per 1024×1024 image. 5 portraits + 6 shots is about $0.43 per full pass, or about $0.80 with a retry or two per shot. Portraits are cached, so changing one shot later costs one image.
+
+The free Cloudflare allowance (10,000 neurons a day, about 100 FLUX images) also ran out on 26 Nov, after three rounds of family-shot retries. That's another sign that getting likenesses right by text alone is the expensive part.
 
 ## What would change at scale
 

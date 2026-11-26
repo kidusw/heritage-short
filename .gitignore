@@ -18,3 +18,6 @@ outputs/**/*.jpg
 outputs/**/*.jpeg
 outputs/**/*.png
 outputs/**/*.webp
+
+# Blind A/B answer keys stay local until the votes are in (EXPERIMENTS.md E5).
+outputs/abtest/*_key.json

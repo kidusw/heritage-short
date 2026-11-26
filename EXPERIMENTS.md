@@ -34,6 +34,7 @@ Format: **hypothesis → change → result** (with the `run_id` from runs.jsonl 
 ## E5. Blind test: Wan 2.2 vs Ken Burns on the same still (s03, camels at Awash)
 - **Hypothesis:** viewers prefer real generated motion (Wan) over a pan/zoom on a still, enough to justify ~20 GPU-minutes per shot.
 - **Method:** `python -m pipeline.abtest s03` renders both versions at the same length and size, labelled A/B in random order (key kept in `outputs/abtest/s03_key.json`). Viewers watch both without being told which is which, and answer: "Which feels more like a real memory, and why?"
+- **Pair rebuilt 26 Nov (work PC):** `outputs/abtest/s03_awash_camels_A.mp4` and `_B.mp4`, both 8.0 s at 1080x1080. The Wan clip was re-downloaded from the Kaggle notebook's stored output (no new GPU run). `abtest` now builds the Ken Burns side from the same still the Wan clip was made from, recorded in the Wan manifest, so both sides show the v4 white car and only the motion differs. The answer key is gitignored until the votes are in.
 - **Result:** _votes and quotes from 3+ viewers to fill in._
 - **Note (26 Nov):** the A/B pair was rendered from the storyboard v4 still, which shows the old white car. Storyboard v5 makes the car blue-green, so the film's s03 no longer matches the test still. The experiment is left as is: it compares motion methods on one still, and the car colour doesn't change that question.
 

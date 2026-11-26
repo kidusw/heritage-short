@@ -8,6 +8,10 @@ every stage; each stage reads it and writes its own outputs, so changing one sho
 > as Ken Burns moves on FLUX keyframes (Wan 2.2 image-to-video was measured as an experiment, E4/E5), an original
 > ACE-Step score (candidate b) ducked under the voice, burned-in English subtitles and an AI end card.
 > Family likenesses were generated only after written consent was recorded in [ETHICS.md](ETHICS.md).
+> Known limitation: the family stills in this cut come from storyboard v6 (text-only FLUX). My review found the
+> people didn't look like us (wrong ethnicity, too dark, inconsistent from shot to shot). Storyboard v7 fixes the
+> descriptions, and a Gemini reference-portrait provider is built for those six shots, but Gemini image models need
+> a paid key, so neither has been rendered yet (EXPERIMENTS.md E7/E8, FAILURES.md F23).
 
 ## Run it
 
@@ -38,7 +42,7 @@ Windows: install ffmpeg with `winget install Gyan.FFmpeg`, and use `python -m pi
 
 | Variable | Where to get it | Used by |
 |---|---|---|
-| `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey) (free tier) | narration (TTS) |
+| `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey) (free tier) | narration (TTS); family keyframes with `image_provider: "gemini"` (needs billing on the key) |
 | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Cloudflare dashboard → Workers AI → "Use REST API" | keyframes (FLUX) |
 | `KAGGLE_API_TOKEN` (a `KGAT_...` token; legacy `KAGGLE_USERNAME` + `KAGGLE_KEY` also work) | kaggle.com → Settings → API → Create New Token | moving shots, music (GPU) |
 
