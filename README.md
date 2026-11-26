@@ -4,8 +4,10 @@ A 60–90 second short film about my family's first trip to Dire Dawa and the Sa
 code pipeline instead of by hand. One file, [`storyboard.json`](storyboard.json), is the contract between
 every stage; each stage reads it and writes its own outputs, so changing one shot regenerates only that shot.
 
-> Status: day 2 of 3. Every stage exists: narration, radio cut, keyframes, moving shots (Wan 2.2 on Kaggle,
-> Ken Burns fallback), music (ACE-Step on Kaggle) and assembly (16:9 + 9:16).
+> Status: final cut, 26 Nov 2026. The Amharic film is 85.5 s in 16:9 and 9:16, at -14.4 LUFS. It has 11 shots, all
+> as Ken Burns moves on FLUX keyframes (Wan 2.2 image-to-video was measured as an experiment, E4/E5), an original
+> ACE-Step score (candidate b) ducked under the voice, burned-in English subtitles and an AI end card.
+> Family likenesses were generated only after written consent was recorded in [ETHICS.md](ETHICS.md).
 
 ## Run it
 
@@ -38,7 +40,7 @@ Windows: install ffmpeg with `winget install Gyan.FFmpeg`, and use `python -m pi
 |---|---|---|
 | `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey) (free tier) | narration (TTS) |
 | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Cloudflare dashboard → Workers AI → "Use REST API" | keyframes (FLUX) |
-| `KAGGLE_USERNAME`, `KAGGLE_KEY` | kaggle.com → Settings → API → Create New Token | moving shots, music (GPU) |
+| `KAGGLE_API_TOKEN` (a `KGAT_...` token; legacy `KAGGLE_USERNAME` + `KAGGLE_KEY` also work) | kaggle.com → Settings → API → Create New Token | moving shots, music (GPU) |
 
 Keys live only in `.env`, which is gitignored.
 
@@ -46,17 +48,20 @@ Keys live only in `.env`, which is gitignored.
 
 ```
 storyboard.json ──validate──┬─> narration (Gemini TTS, per language) ──> radio_cut (prototype + subtitles)
-                            ├─> keyframes (Cloudflare FLUX) ──> shots (Wan 2.2 on Kaggle | Ken Burns fallback)
+                            ├─> keyframes (Cloudflare FLUX) ──> shots (Ken Burns | Wan 2.2 on Kaggle, per shot)
                             ├─> music (ACE-Step on Kaggle)
                             └─> assemble (duck, loudnorm, subtitles, end card, 9:16 + 16:9 per language)
 ```
+
+Outputs: `outputs/final/the-long-road-to-dire-dawa_<lang>_<16x9|9x16>.mp4` with a matching `.srt`. Media is
+gitignored, while manifests, subtitles and `runs.jsonl` are committed.
 
 Every model call appends one line to [`runs.jsonl`](runs.jsonl): model, parameters, seed, latency, cost,
 status, attempt, cache hit. Details in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## What it costs
 
-See [COSTS.md](COSTS.md). Target: $0 actual spend (free tiers + Kaggle GPU quota).
+$0 actual spend: everything ran on free tiers and Kaggle's free GPU quota. Everything we ran, failures included, would cost about $0.25 at list prices, and one clean run about $0.02. See [COSTS.md](COSTS.md).
 
 ## Documents
 
