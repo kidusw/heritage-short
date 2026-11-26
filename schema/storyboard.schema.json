@@ -99,6 +99,7 @@
         "camera": { "type": "string", "description": "Shot size and angle, e.g. 'wide, eye level'." },
         "characters": { "type": "array", "items": { "$ref": "#/$defs/id" } },
         "seed": { "type": "integer", "minimum": 0 },
+        "image_provider": { "enum": ["cloudflare", "gemini"], "default": "cloudflare", "description": "Keyframe model. gemini generates from a reference portrait of each real person in the shot, for consistent looks." },
         "video": { "enum": ["wan", "kenburns"], "default": "wan", "description": "Preferred motion method; kenburns is always the fallback." },
         "narration": {
           "type": "object",

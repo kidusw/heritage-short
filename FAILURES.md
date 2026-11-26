@@ -114,3 +114,8 @@ What broke, what I tried, what fixed it.
 - **Broke:** a one-line version bump through `Get-Content -Raw | Set-Content -Encoding utf8` turned every Amharic narration line into mojibake and added a BOM that `json.load` rejects.
 - **Cause:** Windows PowerShell 5.1 reads files as the ANSI codepage unless told otherwise.
 - **Fix:** caught before anything used it, and rebuilt from the committed file. Edit the storyboard only from Python (`read_bytes().decode("utf-8")`) or an editor, never with PowerShell 5.1 text cmdlets.
+
+## F23. Gemini image models are not on the free tier
+- **Broke:** switching the family shots to Gemini image generation (`image_provider: "gemini"`): every image model on the key (gemini-3.1-flash-image, 2.5-flash-image, 3.1-flash-lite-image, 3-pro-image and their previews) answered 429 on the first call.
+- **Cause:** not a daily cap. The error reads `generate_content_free_tier_input_token_count, limit: 0`: the free tier allows these models zero requests. They need billing enabled on the Gemini API key.
+- **Fix:** the chain now reports "not on the free tier (quota limit 0; needs billing on the key)" instead of "daily quota", and a family shot that can't be generated keeps its previous still while the rest of the stage carries on. The Gemini provider (reference portrait per person, then each shot generated from the portraits of the people in it) is in `pipeline/gemini_images.py`, ready for a key with billing.

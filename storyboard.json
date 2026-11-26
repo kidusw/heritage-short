@@ -73,6 +73,7 @@
   "shots": [
     {
       "id": "s01_departure",
+      "image_provider": "gemini",
       "duration_s": 7,
       "purpose": "Hook: frame the film as my first trip to Dire Dawa, my mother's family's home.",
       "camera": "wide, early morning",
@@ -92,6 +93,7 @@
     },
     {
       "id": "s02_car",
+      "image_provider": "gemini",
       "duration_s": 7,
       "purpose": "Introduce the five of us, the old car, and why we went: Saint Gabriel's feast at Kulubi.",
       "camera": "medium, inside the car from the back seat",
@@ -176,6 +178,7 @@
     },
     {
       "id": "s07_overheat",
+      "image_provider": "gemini",
       "duration_s": 8,
       "purpose": "The crisis: the car gives out in the heat.",
       "camera": "wide, roadside",
@@ -197,6 +200,7 @@
     },
     {
       "id": "s08_water",
+      "image_provider": "gemini",
       "duration_s": 9,
       "purpose": "The heart of the film, the moment I remember most: my father cooling the engine by hand.",
       "camera": "medium close-up, over the open bonnet",
@@ -216,6 +220,7 @@
     },
     {
       "id": "s09_together",
+      "image_provider": "gemini",
       "duration_s": 7,
       "purpose": "What the memory really means: the family together, waiting, not the breakdown.",
       "camera": "wide, eye level",
@@ -255,6 +260,7 @@
     },
     {
       "id": "s11_kulubi",
+      "image_provider": "gemini",
       "duration_s": 8,
       "purpose": "The reason for the journey: standing together at Kulubi Gabriel among the pilgrims.",
       "camera": "wide, from behind the family",
