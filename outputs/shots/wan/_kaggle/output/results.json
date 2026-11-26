@@ -1,0 +1,23 @@
+{
+  "config": {
+    "model": "Wan-AI/Wan2.2-TI2V-5B-Diffusers",
+    "width": 640,
+    "height": 640,
+    "num_frames": 81,
+    "fps": 24,
+    "steps": 30,
+    "guidance": 5.0,
+    "dtype": "float16",
+    "negative": "blurry, distorted, warped faces, extra limbs, text, watermark, flicker"
+  },
+  "jobs": {
+    "s03_awash_camels": {
+      "ok": true,
+      "file": "s03_awash_camels_0b5b4966d826.mp4",
+      "gpu_s": 928.8
+    }
+  },
+  "setup_s": 275.8,
+  "gpu": "Tesla T4",
+  "total_s": 1278.3
+}

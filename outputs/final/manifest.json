@@ -1,0 +1,18 @@
+{
+  "am_16x9": {
+    "file": "outputs/final/the-long-road-to-dire-dawa_am_16x9.mp4",
+    "duration_s": 85.46,
+    "shot_methods": {
+      "kenburns": 11
+    },
+    "music": "outputs/music/b_acedbe61d933.wav"
+  },
+  "am_9x16": {
+    "file": "outputs/final/the-long-road-to-dire-dawa_am_9x16.mp4",
+    "duration_s": 85.46,
+    "shot_methods": {
+      "kenburns": 11
+    },
+    "music": "outputs/music/b_acedbe61d933.wav"
+  }
+}
