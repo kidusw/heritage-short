@@ -1,6 +1,6 @@
 {
   "title": "The Long Road to Dire Dawa",
-  "version": 4,
+  "version": 5,
   "languages": [
     "am",
     "en"
@@ -15,7 +15,7 @@
   "characters": [
     {
       "id": "car",
-      "description": "a white early-1990s Hyundai Elantra sedan with faded paint, a roof rack with a tied-down bag, Ethiopian number plate",
+      "description": "a blue-green (teal) early-1990s Hyundai Elantra sedan with faded paint, a roof rack with a tied-down bag, Ethiopian number plate",
       "real_person": false
     },
     {
@@ -147,7 +147,7 @@
       "duration_s": 7,
       "purpose": "Scale of the journey: the landscape becomes dramatic and unfamiliar.",
       "camera": "extreme wide",
-      "keyframe_prompt": "the small white car on a winding road through dark volcanic rocky mountains near Asbe Teferi, layered ridges, late morning light",
+      "keyframe_prompt": "the small blue-green car on a winding road through dark volcanic rocky mountains near Asbe Teferi, layered ridges, late morning light",
       "motion_prompt": "slow aerial drift following the car along the road",
       "characters": [
         "car"
@@ -169,7 +169,7 @@
       "characters": [
         "car"
       ],
-      "seed": 206,
+      "seed": 306,
       "narration": {
         "am": "ከዚያ መንገዱ ወደ ቆላው ወረደ፤ ሙቀቱም አብሮ መጣ።",
         "en": "Then the road dropped toward the lowlands, and the heat came with it."
@@ -248,7 +248,7 @@
       "characters": [
         "car"
       ],
-      "seed": 210,
+      "seed": 410,
       "narration": {
         "am": "ቀስ በቀስ፣ ቆም እያልን፣ የእናቴ ከተማ ድሬዳዋ ደረስን።",
         "en": "Slowly, stop by stop, we reached Dire Dawa, my mother's hometown."

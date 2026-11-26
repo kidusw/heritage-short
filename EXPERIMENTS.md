@@ -35,3 +35,11 @@ Format: **hypothesis → change → result** (with the `run_id` from runs.jsonl 
 - **Hypothesis:** viewers prefer real generated motion (Wan) over a pan/zoom on a still, enough to justify ~20 GPU-minutes per shot.
 - **Method:** `python -m pipeline.abtest s03` renders both versions at the same length and size, labelled A/B in random order (key kept in `outputs/abtest/s03_key.json`). Viewers watch both without being told which is which, and answer: "Which feels more like a real memory, and why?"
 - **Result:** _votes and quotes from 3+ viewers to fill in._
+- **Note (26 Nov):** the A/B pair was rendered from the storyboard v4 still, which shows the old white car. Storyboard v5 makes the car blue-green, so the film's s03 no longer matches the test still. The experiment is left as is: it compares motion methods on one still, and the car colour doesn't change that question.
+
+## E6. Keyframe review after the car colour change (FLUX schnell, 4 shots)
+- **What I checked:** every regenerated still (s03, s05, s06, s10) for car colour, garbled text, hands/faces and modern cars.
+- **Car colour:** all four came out teal, matching the v5 description on the first try.
+- **Text:** every still painted fake badge and plate text ("HLANTRA", "HYUNGLATRA", "DIRE-DAWON"). The character description names the make and model and asks for an Ethiopian number plate, and FLUX schnell takes no negative prompt, so the style's "text" negative never reaches it.
+- **Retries:** s06 and s10 got two new seeds each (the limit). s10's last take (seed 410) is the best. s06 never showed the temperature gauge the prompt asks for; the kept take (seed 306) is the one with the least text, but it misses the gauge.
+- **Next:** dropping "Hyundai Elantra" and "number plate" from the prompt (or describing the car only by shape and colour) is the likely fix for the text; s06's prompt should lead with the gauge close-up rather than the car.

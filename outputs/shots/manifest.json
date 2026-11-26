@@ -12,7 +12,7 @@
     "duration_s": 7
   },
   "s03_awash_camels": {
-    "file": "outputs/shots/s03_awash_camels_kenburns_7e2abcf4eb21.mp4",
+    "file": "outputs/shots/s03_awash_camels_kenburns_80d2b072b53b.mp4",
     "method": "kenburns",
     "reason": "preferred in storyboard",
     "duration_s": 8
@@ -24,13 +24,13 @@
     "duration_s": 6
   },
   "s05_asbe_teferi": {
-    "file": "outputs/shots/s05_asbe_teferi_kenburns_8d20e18871a1.mp4",
+    "file": "outputs/shots/s05_asbe_teferi_kenburns_51f1444b62d9.mp4",
     "method": "kenburns",
     "reason": "preferred in storyboard",
     "duration_s": 7
   },
   "s06_heat": {
-    "file": "outputs/shots/s06_heat_kenburns_dc53302744ec.mp4",
+    "file": "outputs/shots/s06_heat_kenburns_e364319f070c.mp4",
     "method": "kenburns",
     "reason": "preferred in storyboard",
     "duration_s": 7
@@ -54,7 +54,7 @@
     "duration_s": 7
   },
   "s10_arrival": {
-    "file": "outputs/shots/s10_arrival_kenburns_9d17f0053c73.mp4",
+    "file": "outputs/shots/s10_arrival_kenburns_eb63c55c4f8b.mp4",
     "method": "kenburns",
     "reason": "preferred in storyboard",
     "duration_s": 7

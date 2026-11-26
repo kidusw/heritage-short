@@ -46,3 +46,7 @@ Every shot uses a Ken Burns move chosen from its `motion_prompt` (`video: "kenbu
 ## Changes from my own review (25 Nov)
 - **Opening reframed:** v2 opened on "every year, many people travel to Kulubi", which made it a film about the pilgrimage in general. v4 opens with "this is the story of my first trip to Dire Dawa, where my mother's family comes from", so it is personal from the first line. The Kulubi feast moves to shot 2 as the reason for the trip, and the arrival shot names Dire Dawa as my mother's hometown, which ties the start and the end together.
 - **Side effect:** s01's old line had a word ("ብዙዎች") that the TTS seemed to mispronounce (EXPERIMENTS.md E3). The rewrite removes it.
+
+## Changes from my own review (26 Nov)
+- **Score:** ACE-Step candidate **b** (seed 43), chosen by me after listening to all three. a and c stay in `outputs/music/manifest.json` for reference.
+- **Car colour (storyboard v5):** our car was blue-green, not white. The `car` character is now "a blue-green (teal) early-1990s Hyundai Elantra", and s05's prompt says "small blue-green car". The car keyframes (s03, s05, s06, s10) were regenerated; s06 and s10 took new seeds (306, 410) after review.
