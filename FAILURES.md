@@ -104,3 +104,13 @@ What broke, what I tried, what fixed it.
 - **Broke:** the first scored export (v4 storyboard, music a) had audio timestamp gaps of ~3 s at 14.0, 42, 66 and 73.4 s in both aspects. The decoded audio was 73.5 s against 85.5 s of picture, so from s03 on the voice and score ran up to 12 s ahead of the picture and subtitles. ebur128 still read -13.9 LUFS, so the loudness check alone did not catch it.
 - **Cause:** loudnorm (two-pass, linear) dropped ~3 s blocks of samples (its look-ahead window) when it ran in the same filtergraph as the video chain (crop, scale, subtitles, drawtext). The same audio graph run on its own kept every sample, with the voice aligned to `radio_am.mp3` at 0 ms lag throughout. `asetpts` after loudnorm only hid the gaps; the samples were still gone.
 - **Fix:** `assemble` renders the audio mix to a WAV in its own ffmpeg pass, then muxes it with the filtered picture. Re-measured: no audio gaps, decoded audio 85.4 s, -14.1 LUFS, true peak -1.4 dBTP, both aspects.
+
+## F21. Two narration lines buried under the score
+- **Broke:** with music b, the voice sat only 2.5 dB (s06) and 0.3 dB (s10) above the music under it. Measured by aligning `radio_am.mp3` with the final mix and treating whatever the voice doesn't explain as the music.
+- **Cause:** the sidechain threshold was 0.03 (about -30 dBFS). Speech peaks only ~15 dB above that, so the duck was capped at ~7 dB whatever the ratio (`duck_db` -14 to -20 moved the margins by under 1 dB). s06 and s10 are the quietest voice takes (s10 came from the fallback TTS model), so they lost first.
+- **Fix:** threshold 0.01 (about -40 dBFS), `duck_db` -20 (ratio 10), and the score's base level from -6 to -9 dB. Re-measured: every line is 6.2 dB or more above the music (s10 6.2, the rest 10-20 dB), -14.4 LUFS, true peak -1.4 dBTP.
+
+## F22. Editing storyboard.json from Windows PowerShell corrupted the Amharic
+- **Broke:** a one-line version bump through `Get-Content -Raw | Set-Content -Encoding utf8` turned every Amharic narration line into mojibake and added a BOM that `json.load` rejects.
+- **Cause:** Windows PowerShell 5.1 reads files as the ANSI codepage unless told otherwise.
+- **Fix:** caught before anything used it, and rebuilt from the committed file. Edit the storyboard only from Python (`read_bytes().decode("utf-8")`) or an editor, never with PowerShell 5.1 text cmdlets.

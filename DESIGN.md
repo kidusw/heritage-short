@@ -50,3 +50,5 @@ Every shot uses a Ken Burns move chosen from its `motion_prompt` (`video: "kenbu
 ## Changes from my own review (26 Nov)
 - **Score:** ACE-Step candidate **b** (seed 43), chosen by me after listening to all three. a and c stay in `outputs/music/manifest.json` for reference.
 - **Car colour (storyboard v5):** our car was blue-green, not white. The `car` character is now "a blue-green (teal) early-1990s Hyundai Elantra", and s05's prompt says "small blue-green car". The car keyframes (s03, s05, s06, s10) were regenerated; s06 and s10 took new seeds (306, 410) after review.
+- **Family shots (storyboard v6):** consent recorded in ETHICS.md, so all 11 shots are now real stills with Ken Burns moves (no placeholders). The car is described by shape and colour only, to stop the model painting fake badges and plates. The father's description says "Habesha ... with brown skin", because the model kept drawing a light-skinned man from "Ethiopian father". s09 asks for "the five of them, all adults".
+- **Mix:** the score now sits 3 dB lower and ducks harder under the voice (F21), so every line is at least 6 dB above the music.

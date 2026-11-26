@@ -1,18 +1,18 @@
 {
   "s01_departure": {
-    "file": "outputs/shots/s01_departure_placeholder_67ed1751d151.mp4",
-    "method": "placeholder",
-    "reason": "consent pending",
+    "file": "outputs/shots/s01_departure_kenburns_9080926a1600.mp4",
+    "method": "kenburns",
+    "reason": "preferred in storyboard",
     "duration_s": 7
   },
   "s02_car": {
-    "file": "outputs/shots/s02_car_placeholder_67ed1751d151.mp4",
-    "method": "placeholder",
-    "reason": "consent pending",
+    "file": "outputs/shots/s02_car_kenburns_dca629355db0.mp4",
+    "method": "kenburns",
+    "reason": "preferred in storyboard",
     "duration_s": 7
   },
   "s03_awash_camels": {
-    "file": "outputs/shots/s03_awash_camels_kenburns_80d2b072b53b.mp4",
+    "file": "outputs/shots/s03_awash_camels_kenburns_f2c3da037004.mp4",
     "method": "kenburns",
     "reason": "preferred in storyboard",
     "duration_s": 8
@@ -24,45 +24,45 @@
     "duration_s": 6
   },
   "s05_asbe_teferi": {
-    "file": "outputs/shots/s05_asbe_teferi_kenburns_51f1444b62d9.mp4",
+    "file": "outputs/shots/s05_asbe_teferi_kenburns_01c45a2dc336.mp4",
     "method": "kenburns",
     "reason": "preferred in storyboard",
     "duration_s": 7
   },
   "s06_heat": {
-    "file": "outputs/shots/s06_heat_kenburns_e364319f070c.mp4",
+    "file": "outputs/shots/s06_heat_kenburns_a78a69213849.mp4",
     "method": "kenburns",
     "reason": "preferred in storyboard",
     "duration_s": 7
   },
   "s07_overheat": {
-    "file": "outputs/shots/s07_overheat_placeholder_c7954e68cf72.mp4",
-    "method": "placeholder",
-    "reason": "consent pending",
+    "file": "outputs/shots/s07_overheat_kenburns_02e9b182a5b1.mp4",
+    "method": "kenburns",
+    "reason": "preferred in storyboard",
     "duration_s": 8
   },
   "s08_water": {
-    "file": "outputs/shots/s08_water_placeholder_904424e51b6b.mp4",
-    "method": "placeholder",
-    "reason": "consent pending",
+    "file": "outputs/shots/s08_water_kenburns_4a970dc68dd4.mp4",
+    "method": "kenburns",
+    "reason": "preferred in storyboard",
     "duration_s": 9
   },
   "s09_together": {
-    "file": "outputs/shots/s09_together_placeholder_67ed1751d151.mp4",
-    "method": "placeholder",
-    "reason": "consent pending",
+    "file": "outputs/shots/s09_together_kenburns_b4a54607a9b2.mp4",
+    "method": "kenburns",
+    "reason": "preferred in storyboard",
     "duration_s": 7
   },
   "s10_arrival": {
-    "file": "outputs/shots/s10_arrival_kenburns_eb63c55c4f8b.mp4",
+    "file": "outputs/shots/s10_arrival_kenburns_f6b14bdf0413.mp4",
     "method": "kenburns",
     "reason": "preferred in storyboard",
     "duration_s": 7
   },
   "s11_kulubi": {
-    "file": "outputs/shots/s11_kulubi_placeholder_c7954e68cf72.mp4",
-    "method": "placeholder",
-    "reason": "consent pending",
+    "file": "outputs/shots/s11_kulubi_kenburns_9db226505d7b.mp4",
+    "method": "kenburns",
+    "reason": "preferred in storyboard",
     "duration_s": 8
   }
 }

@@ -11,11 +11,11 @@ below doesn't say `granted`. `python -m pipeline.validate` lists what is still p
 
 | consent_ref | Person | Depicted / voiced | Status | Date, how given |
 |---|---|---|---|---|
-| `family-narrator` | Me (Kidus) | depicted (AI likeness), story told in first person | pending | |
-| `family-father` | My father | depicted (AI likeness), named as "my father" | pending | |
-| `family-mother` | My mother | depicted (AI likeness) | pending | |
-| `family-sister` | My sister | depicted (AI likeness) | pending | |
-| `family-brother` | My brother | depicted (AI likeness) | pending | |
+| `family-narrator` | Me (Kidus) | depicted (AI likeness), story told in first person | granted | 2026-11-26, written consent |
+| `family-father` | My father | depicted (AI likeness), named as "my father" | granted | 2026-11-26, written consent |
+| `family-mother` | My mother | depicted (AI likeness) | granted | 2026-11-26, written consent |
+| `family-sister` | My sister | depicted (AI likeness) | granted | 2026-11-26, written consent |
+| `family-brother` | My brother | depicted (AI likeness) | granted | 2026-11-26, written consent |
 
 To record consent, change `pending` to `granted` and fill in the date and how it was given
 (for example "in person, 25 Nov 2026, after seeing the storyboard").

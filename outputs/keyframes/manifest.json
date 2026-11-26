@@ -1,7 +1,7 @@
 {
   "s03_awash_camels": {
-    "file": "outputs/keyframes/s03_awash_camels_3db07a434c13.jpg",
-    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a blue-green (teal) early-1990s Hyundai Elantra sedan with faded paint, a roof rack with a tied-down bag, Ethiopian number plate. a line of camels crossing the highway near Awash, dry acacia scrubland, the car waiting in the distance, hazy midday light Shot: wide, eye level, from the roadside. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
+    "file": "outputs/keyframes/s03_awash_camels_3953c84f002c.jpg",
+    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a boxy blue-green (teal) early-1990s four-door sedan with faded paint and a roof rack with a tied-down bag. a line of camels crossing the highway near Awash, dry acacia scrubland, the car waiting in the distance, hazy midday light Shot: wide, eye level, from the roadside. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
     "seed": 203
   },
   "s04_monkeys": {
@@ -10,18 +10,48 @@
     "seed": 204
   },
   "s05_asbe_teferi": {
-    "file": "outputs/keyframes/s05_asbe_teferi_36b72a5483aa.jpg",
-    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a blue-green (teal) early-1990s Hyundai Elantra sedan with faded paint, a roof rack with a tied-down bag, Ethiopian number plate. the small blue-green car on a winding road through dark volcanic rocky mountains near Asbe Teferi, layered ridges, late morning light Shot: extreme wide. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
-    "seed": 205
+    "file": "outputs/keyframes/s05_asbe_teferi_9151747a4bd9.jpg",
+    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a boxy blue-green (teal) early-1990s four-door sedan with faded paint and a roof rack with a tied-down bag. the small blue-green car on a winding road through dark volcanic rocky mountains near Asbe Teferi, layered ridges, late morning light Shot: extreme wide. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
+    "seed": 305
   },
   "s06_heat": {
-    "file": "outputs/keyframes/s06_heat_f5dd7da2eb0b.jpg",
-    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a blue-green (teal) early-1990s Hyundai Elantra sedan with faded paint, a roof rack with a tied-down bag, Ethiopian number plate. close-up of the old car's dashboard temperature gauge needle climbing towards red, heat shimmer on the road ahead through the windscreen, dusty lowland Shot: close-up, dashboard. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
-    "seed": 306
+    "file": "outputs/keyframes/s06_heat_ce38b0abd7dd.jpg",
+    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. extreme close-up of an old analogue dashboard temperature gauge, the needle near the red zone, worn plastic dashboard, blurred heat shimmer on a dusty lowland road through the windscreen behind it, no text Shot: close-up, dashboard. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
+    "seed": 606
   },
   "s10_arrival": {
-    "file": "outputs/keyframes/s10_arrival_fd598f94296b.jpg",
-    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a blue-green (teal) early-1990s Hyundai Elantra sedan with faded paint, a roof rack with a tied-down bag, Ethiopian number plate. the car driving into Dire Dawa at dusk, warm street lights, palm trees, bajaj taxis, the sky orange and violet Shot: wide, dusk. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
+    "file": "outputs/keyframes/s10_arrival_dfcf5b30aa3e.jpg",
+    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a boxy blue-green (teal) early-1990s four-door sedan with faded paint and a roof rack with a tied-down bag. the car driving into Dire Dawa at dusk, warm street lights, palm trees, bajaj taxis, the sky orange and violet Shot: wide, dusk. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
     "seed": 410
+  },
+  "s01_departure": {
+    "file": "outputs/keyframes/s01_departure_191ccb6ce2cc.jpg",
+    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a boxy blue-green (teal) early-1990s four-door sedan with faded paint and a roof rack with a tied-down bag. The father is an Ethiopian (Habesha) father in his fifties with brown skin, short greying hair, light jacket over a collared shirt. The mother is an Ethiopian mother in her fifties wearing a white netela shawl over a dress. a family loading bags onto the roof of the car outside a house in Addis Ababa before sunrise, cool blue light, eucalyptus trees Shot: wide, early morning. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
+    "seed": 301
+  },
+  "s02_car": {
+    "file": "outputs/keyframes/s02_car_61b06e93e949.jpg",
+    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a boxy blue-green (teal) early-1990s four-door sedan with faded paint and a roof rack with a tied-down bag. The father is an Ethiopian (Habesha) father in his fifties with brown skin, short greying hair, light jacket over a collared shirt. The mother is an Ethiopian mother in her fifties wearing a white netela shawl over a dress. The sister is the narrator's sister, a young Ethiopian woman with braided hair. The brother is the narrator's brother, a young Ethiopian man in a t-shirt. inside the car on the highway, the father driving, the mother beside him, the sister and brother in the back seat, open road through the windscreen Shot: medium, inside the car from the back seat. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
+    "seed": 402
+  },
+  "s07_overheat": {
+    "file": "outputs/keyframes/s07_overheat_03bba97aaab7.jpg",
+    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a boxy blue-green (teal) early-1990s four-door sedan with faded paint and a roof rack with a tied-down bag. The father is an Ethiopian (Habesha) father in his fifties with brown skin, short greying hair, light jacket over a collared shirt. The mother is an Ethiopian mother in her fifties wearing a white netela shawl over a dress. The sister is the narrator's sister, a young Ethiopian woman with braided hair. The brother is the narrator's brother, a young Ethiopian man in a t-shirt. the car pulled over on the side of a hot dusty lowland road, bonnet open, steam rising from the engine, the family stepping out into the sun Shot: wide, roadside. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
+    "seed": 307
+  },
+  "s08_water": {
+    "file": "outputs/keyframes/s08_water_a5c3f16ca372.jpg",
+    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a boxy blue-green (teal) early-1990s four-door sedan with faded paint and a roof rack with a tied-down bag. The father is an Ethiopian (Habesha) father in his fifties with brown skin, short greying hair, light jacket over a collared shirt. The narrator is the narrator, a young Ethiopian man with short black hair, wearing a plain light shirt. the father pouring water from a yellow jerrycan onto the hot engine and radiator of the car, steam bursting up, the narrator holding a second jerrycan beside him, bright harsh sun Shot: medium close-up, over the open bonnet. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
+    "seed": 308
+  },
+  "s09_together": {
+    "file": "outputs/keyframes/s09_together_bfb1226179db.jpg",
+    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The car is a boxy blue-green (teal) early-1990s four-door sedan with faded paint and a roof rack with a tied-down bag. The father is an Ethiopian (Habesha) father in his fifties with brown skin, short greying hair, light jacket over a collared shirt. The mother is an Ethiopian mother in her fifties wearing a white netela shawl over a dress. The sister is the narrator's sister, a young Ethiopian woman with braided hair. The brother is the narrator's brother, a young Ethiopian man in a t-shirt. The narrator is the narrator, a young Ethiopian man with short black hair, wearing a plain light shirt. the five of them, father, mother, sister, brother and the narrator, all adults, resting together in the thin shade of an acacia tree beside the parked car, the mother sharing bread, everyone laughing, hot afternoon light Shot: wide, eye level. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
+    "seed": 309
+  },
+  "s11_kulubi": {
+    "file": "outputs/keyframes/s11_kulubi_1ccdb5589577.jpg",
+    "prompt": "Warm nostalgic film photograph, soft grain, natural light, 35mm lens, eastern Ethiopia, honest documentary feel. The father is an Ethiopian (Habesha) father in his fifties with brown skin, short greying hair, light jacket over a collared shirt. The mother is an Ethiopian mother in her fifties wearing a white netela shawl over a dress. The sister is the narrator's sister, a young Ethiopian woman with braided hair. The brother is the narrator's brother, a young Ethiopian man in a t-shirt. The narrator is the narrator, a young Ethiopian man with short black hair, wearing a plain light shirt. seen from behind, the family standing among thousands of pilgrims dressed in white netela at Kulubi Gabriel church on its hilltop, morning light, umbrellas and candles Shot: wide, from behind the family. No text, watermark, logo, distorted hands, extra fingers, cartoon, oversaturated, modern cars in the foreground.",
+    "seed": 211
   }
 }

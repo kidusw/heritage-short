@@ -148,9 +148,11 @@ def export(sb: dict, lang: str, aspect: str, master: Path, total: float, tmp: Pa
         # Score sits at -20 dB under nothing and is pushed down a further ~|duck_db| when the voice speaks.
         ratio = max(2, round(10 ** (abs(duck_db) / 20)))
         af = (f"[1:a]aresample=48000,asplit=2[voice][key];"
-              f"[2:a]aresample=48000,aloop=loop=-1:size=2e9,atrim=0:{total:.3f},volume=-6dB,"
+              f"[2:a]aresample=48000,aloop=loop=-1:size=2e9,atrim=0:{total:.3f},volume=-9dB,"
               f"afade=t=in:st=0:d=1.5,afade=t=out:st={max(0, total - 3):.3f}:d=3[mus];"
-              f"[mus][key]sidechaincompress=threshold=0.03:ratio={ratio}:attack=30:release=600[ducked];"
+              # threshold 0.01 (~-40 dBFS): at 0.03 the voice only rose ~15 dB above it, which capped the duck at
+              # ~7 dB whatever the ratio, and the quieter lines (s06, s10) were buried (FAILURES.md F21).
+              f"[mus][key]sidechaincompress=threshold=0.01:ratio={ratio}:attack=30:release=600[ducked];"
               f"[voice][ducked]amix=inputs=2:duration=first:normalize=0")
         inputs = ["-i", str(master), "-i", str(radio), "-i", str(music)]
     else:
