@@ -25,7 +25,9 @@ def build_prompt(sb: dict, shot: dict) -> str:
     chars = {c["id"]: c["description"] for c in sb.get("characters", [])}
     parts = [sb["style"]["visual_prefix"]]
     # Character descriptions are repeated verbatim in every shot: the cheapest consistency trick there is.
-    parts += [f"The {c} is {chars[c]}." for c in shot.get("characters", [])]
+    # Always in storyboard order, so a person's description sits in the same place in every prompt.
+    in_shot = set(shot.get("characters", []))
+    parts += [f"The {c} is {d}." for c, d in chars.items() if c in in_shot]
     parts.append(shot["keyframe_prompt"])
     if shot.get("camera"):
         parts.append(f"Shot: {shot['camera']}.")
