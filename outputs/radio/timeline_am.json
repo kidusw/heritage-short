@@ -1,87 +1,87 @@
 {
   "lang": "am",
-  "total_s": 85.48,
+  "total_s": 85.44,
   "shots": [
     {
       "shot": "s01_departure",
       "start_s": 0.0,
       "duration_s": 7,
-      "narration_s": 4.71,
+      "narration_s": 4.81,
       "stretched": false
     },
     {
       "shot": "s02_car",
       "start_s": 7.0,
       "duration_s": 7,
-      "narration_s": 5.45,
+      "narration_s": 4.6,
       "stretched": false
     },
     {
       "shot": "s03_awash_camels",
       "start_s": 14.0,
       "duration_s": 8,
-      "narration_s": 7.16,
+      "narration_s": 5.19,
       "stretched": false
     },
     {
       "shot": "s04_monkeys",
       "start_s": 22.0,
       "duration_s": 6,
-      "narration_s": 3.07,
+      "narration_s": 3.08,
       "stretched": false
     },
     {
       "shot": "s05_asbe_teferi",
       "start_s": 28.0,
       "duration_s": 7,
-      "narration_s": 5.57,
+      "narration_s": 5.68,
       "stretched": false
     },
     {
       "shot": "s06_heat",
       "start_s": 35.0,
       "duration_s": 7,
-      "narration_s": 4.25,
+      "narration_s": 4.04,
       "stretched": false
     },
     {
       "shot": "s07_overheat",
       "start_s": 42.0,
       "duration_s": 8,
-      "narration_s": 4.71,
+      "narration_s": 4.08,
       "stretched": false
     },
     {
       "shot": "s08_water",
       "start_s": 50.0,
       "duration_s": 9,
-      "narration_s": 5.61,
+      "narration_s": 5.21,
       "stretched": false
     },
     {
       "shot": "s09_together",
       "start_s": 59.0,
       "duration_s": 7,
-      "narration_s": 5.72,
+      "narration_s": 3.93,
       "stretched": false
     },
     {
       "shot": "s10_arrival",
       "start_s": 66.0,
-      "duration_s": 7,
-      "narration_s": 5.6,
-      "stretched": false
-    },
-    {
-      "shot": "s11_kulubi",
-      "start_s": 73.0,
-      "duration_s": 8.48,
-      "narration_s": 7.68,
+      "duration_s": 7.44,
+      "narration_s": 6.64,
       "stretched": true
     },
     {
+      "shot": "s11_kulubi",
+      "start_s": 73.44,
+      "duration_s": 8,
+      "narration_s": 5.95,
+      "stretched": false
+    },
+    {
       "shot": "end_card",
-      "start_s": 81.48,
+      "start_s": 81.44,
       "duration_s": 4
     }
   ]

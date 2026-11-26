@@ -159,10 +159,18 @@ def export(sb: dict, lang: str, aspect: str, master: Path, total: float, tmp: Pa
 
     af += "," + loudnorm_filter(inputs, af, total)
 
+    # The audio mix is rendered on its own first. Run in the same filtergraph as the video chain,
+    # loudnorm dropped ~3 s blocks of audio at four points, so voice and score ran up to 12 s ahead
+    # of the picture (FAILURES.md F20). Audio-only, the same graph keeps every sample.
+    mix = tmp / f"mix_{aspect}.wav"
+    audio_af = af.replace("[1:a]", "[0:a]").replace("[2:a]", "[1:a]").removesuffix("[a]") + ",aresample=48000[a]"
+    run_ffmpeg([*inputs[2:], "-filter_complex", audio_af, "-map", "[a]", "-t", f"{total:.3f}",
+                "-c:a", "pcm_s24le", str(mix)])
+
     cwd = os.getcwd()
     os.chdir(tmp)
     try:
-        run_ffmpeg([*inputs, "-filter_complex", f"{vf};{af}", "-map", "[v]", "-map", "[a]",
+        run_ffmpeg(["-i", str(master), "-i", str(mix), "-filter_complex", vf, "-map", "[v]", "-map", "1:a",
                     "-t", f"{total:.3f}", "-c:v", "libx264", "-preset", "medium", "-crf", "20",
                     "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(out)])
     finally:
