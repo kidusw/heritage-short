@@ -1,0 +1,53 @@
+{
+  "spec": {
+    "config": {
+      "model": "ACE-Step/acestep-v15-xl-turbo-diffusers",
+      "steps": 8,
+      "guidance": 1.0,
+      "dtype": "bfloat16"
+    },
+    "prompt": "Gentle Ethiopian instrumental, masinko and krar over soft piano, tizita mode, warm and nostalgic, a slow road-trip pulse that lifts into a reverent, hopeful ending",
+    "lyrics": "[instrumental]",
+    "bpm": 76,
+    "duration_s": 87,
+    "key": "acedbe61d933",
+    "candidates": [
+      {
+        "name": "a_acedbe61d933",
+        "label": "a",
+        "seed": 42
+      },
+      {
+        "name": "b_acedbe61d933",
+        "label": "b",
+        "seed": 43
+      },
+      {
+        "name": "c_acedbe61d933",
+        "label": "c",
+        "seed": 44
+      }
+    ]
+  },
+  "candidates": {
+    "a_acedbe61d933": {
+      "ok": true,
+      "file": "a_acedbe61d933.wav",
+      "gpu_s": 53.8
+    },
+    "b_acedbe61d933": {
+      "ok": true,
+      "file": "b_acedbe61d933.wav",
+      "gpu_s": 49.3
+    },
+    "c_acedbe61d933": {
+      "ok": true,
+      "file": "c_acedbe61d933.wav",
+      "gpu_s": 47.6
+    }
+  },
+  "gpu": "Tesla T4",
+  "offload": "model",
+  "setup_s": 56.1,
+  "total_s": 255.6
+}

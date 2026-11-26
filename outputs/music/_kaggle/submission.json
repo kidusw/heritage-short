@@ -1,0 +1,31 @@
+{
+  "user": "kidusworkneh",
+  "config": {
+    "model": "ACE-Step/acestep-v15-xl-turbo-diffusers",
+    "steps": 8,
+    "guidance": 1.0,
+    "dtype": "bfloat16"
+  },
+  "prompt": "Gentle Ethiopian instrumental, masinko and krar over soft piano, tizita mode, warm and nostalgic, a slow road-trip pulse that lifts into a reverent, hopeful ending",
+  "lyrics": "[instrumental]",
+  "bpm": 76,
+  "duration_s": 87,
+  "key": "acedbe61d933",
+  "candidates": [
+    {
+      "name": "a_acedbe61d933",
+      "label": "a",
+      "seed": 42
+    },
+    {
+      "name": "b_acedbe61d933",
+      "label": "b",
+      "seed": 43
+    },
+    {
+      "name": "c_acedbe61d933",
+      "label": "c",
+      "seed": 44
+    }
+  ]
+}

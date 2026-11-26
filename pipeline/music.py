@@ -87,23 +87,34 @@ def submit() -> bool:
     return True
 
 
+def submission() -> dict | None:
+    # submission.json is gitignored, so on a machine that didn't submit it is missing; the kernel
+    # still belongs to the same Kaggle user and its results.json carries the spec it ran.
+    p = stage_dir(STAGE) / "_kaggle" / "submission.json"
+    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
+
+
 def status() -> str:
-    sub = json.loads((stage_dir(STAGE) / "_kaggle" / "submission.json").read_text(encoding="utf-8"))
-    out = kaggle("kernels", "status", f"{sub['user']}/{KERNEL_SLUG}", check=False).lower()
+    user = (submission() or {}).get("user") or username()
+    out = kaggle("kernels", "status", f"{user}/{KERNEL_SLUG}", check=False).lower()
     return next((w for w in ("complete", "error", "cancel", "running", "queued") if w in out), out.strip())
 
 
 def collect() -> None:
     wd = stage_dir(STAGE) / "_kaggle"
-    sub = json.loads((wd / "submission.json").read_text(encoding="utf-8"))
+    sub = submission()
+    user = (sub or {}).get("user") or username()
     dl = wd / "output"
     shutil.rmtree(dl, ignore_errors=True)
-    dl.mkdir()
-    kaggle("kernels", "output", f"{sub['user']}/{KERNEL_SLUG}", "-p", str(dl), "-o", "-q")
+    dl.mkdir(parents=True)
+    kaggle("kernels", "output", f"{user}/{KERNEL_SLUG}", "-p", str(dl), "-o", "-q")
     res_path = next(dl.rglob("results.json"), None)
     if not res_path:
-        raise SystemExit(f"No results.json; see the log at https://www.kaggle.com/code/{sub['user']}/{KERNEL_SLUG}")
+        raise SystemExit(f"No results.json; see the log at https://www.kaggle.com/code/{user}/{KERNEL_SLUG}")
     res = json.loads(res_path.read_text(encoding="utf-8"))
+    if sub is None:
+        sub = {"user": user, **res["spec"]}
+        print("music: no local submission.json (submitted from another machine); using the spec in results.json")
     m = manifest()
     for c in sub["candidates"]:
         r = res["candidates"].get(c["name"]) or {"ok": False, "error": "not reached"}
